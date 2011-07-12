@@ -92,13 +92,13 @@
 
                 var game = new Game({
                     draw:function(){
-                    // calculate the fps
-                    var fps = (++frames) / ((+new Date() -
-                        this.startTime()) / 1000);
-                    // clear (erase) the canvas
-                    canvas.width = canvas.width;
-                    // draw the fps in text on the canvas
-                    context.fillText("fps: " + fps.toFixed(2), 5, 10);
+                        // calculate the fps
+                        var fps = (++frames) / ((+new Date() -
+                            this.startTime()) / 1000);
+                        // clear (erase) the canvas
+                        canvas.width = canvas.width;
+                        // draw the fps in text on the canvas
+                        context.fillText("fps: " + fps.toFixed(2), 5, 10);
                     }
                 });
 
