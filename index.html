@@ -11,18 +11,52 @@
         </style>
         <script src="utils.js"></script>
         <script src="game.js"></script>
+        <script src="entity.js"></script>
         <script>
+            // do the inheritance
+            utils.inherit(Ball, Entity);
+            function Ball(options) {
+                options = options || {};
+                utils.inherit(this, Entity, options);
+                this.radius = options.radius || 2;
+                // to update the physics/state of the entity
+                this.update = function (gametime) {
+                    // do nothing for now
+                    return this;
+                };
+                this.draw = function (context) {
+                    context.beginPath();
+                    context.arc(this.x, this.y, this.radius,
+                        0, Math.PI * 2, false);
+                    context.closePath();
+                    context.fill();
+                    context.stroke();
+                    return this;
+                };
+            }
+
             // execute on body load
             function load() {
-                var canvas, context, game, start, stop, frames = 0;
+                var canvas, context, game, start, stop, ball, frames = 0;
 
                 // find the canvas
                 canvas = document.getElementById("canvas");
                 // get the drawing context
                 context = canvas.getContext("2d");
 
+                // the y axis is inverted (zero is top corner not bottom)
+                ball = new Ball({
+                    x: canvas.height / 2,
+                    y: canvas.width / 2,
+                    radius: 10
+                });
+
                 // create the game
                 game = new Game({
+                    update: function (gametime) {
+                        // update that ball!
+                        ball.update(gametime);
+                    },
                     draw: function () {
                         // calculate the fps
                         var fps = (++frames) / ((+new Date() -
@@ -31,6 +65,8 @@
                         canvas.width = canvas.width;
                         // draw the fps in text on the canvas
                         context.fillText("fps: " + fps.toFixed(2), 5, 10);
+                        // draw that ball!
+                        ball.draw(context);
                     }
                 });
 
