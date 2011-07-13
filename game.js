@@ -1,6 +1,6 @@
 function Game(options) {
-	var self = this, timeout = null, start, last,
-		accumulator, timestep;
+	var self = this, timeout = null, start, last, accumulator, timestep;
+
 	options = options || {};
 
 	// in milliseconds
