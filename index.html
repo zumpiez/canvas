@@ -8,26 +8,9 @@
                 border: 1px solid black;
             }
         </style>
+        <script src="utils.js" type="text/javascript" language="javascript"></script>
         <script src="game.js" type="text/javascript" language="javascript"></script>
         <script>
-            
-
-            // i can haz log
-            function log(msg){
-                if("undefined" !== typeof console){
-                    console.log("" + msg);
-                }
-            }
-
-            // attach an event handler to a DOM element
-            function addEventHandler(el, e, h){
-                if("undefined" !== typeof el.addEventListener){
-                    el.addEventListener(e, h, false);
-                }else{
-                    el.attachEvent("on" + e, h);
-                }
-            }
-
             // execute on body load
             function load(){
                 var canvas, context, game, start, stop, frames = 0;
@@ -53,10 +36,10 @@
                 start = document.getElementById("start");
 
                 // start click handler
-                addEventHandler(start, "click", function(e){
+                utils.on(start, "click", function(e){
                     if(false === game.isRunning()){
                         frames = 0;
-                        log("starting game");
+                        utils.log("starting game");
                         game.start();
                     }
                 });
@@ -64,9 +47,9 @@
                 stop = document.getElementById("stop");
 
                 // stop click handler
-                addEventHandler(stop, "click", function(e){
+                utils.on(stop, "click", function(e){
                     if(true === game.isRunning()){
-                        log("stopping game");
+                        utils.log("stopping game");
                         game.stop();
                     }
                 });
