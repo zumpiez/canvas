@@ -9,52 +9,53 @@
                 border: 1px solid black;
             }
         </style>
-        <script src="utils.js" type="text/javascript" language="javascript"></script>
-        <script src="game.js" type="text/javascript" language="javascript"></script>                                                                                                                                                               <script>
-        // execute on body load
-        function load() {
-            var canvas, context, game, start, stop, frames = 0;
+        <script src="utils.js"></script>
+        <script src="game.js"></script>
+        <script>
+            // execute on body load
+            function load() {
+                var canvas, context, game, start, stop, frames = 0;
 
-            // find the canvas
-            canvas = document.getElementById("canvas");
-            // get the drawing context
-            context = canvas.getContext("2d");
+                // find the canvas
+                canvas = document.getElementById("canvas");
+                // get the drawing context
+                context = canvas.getContext("2d");
 
-            // create the game
-            game = new Game({
-                draw: function () {
-                    // calculate the fps
-                    var fps = (++frames) / ((+new Date() -
-                            this.startTime()) / 1000);
-                    // clear (erase) the canvas
-                    canvas.width = canvas.width;
-                    // draw the fps in text on the canvas
-                    context.fillText("fps: " + fps.toFixed(2), 5, 10);
-                }
-            });
+                // create the game
+                game = new Game({
+                    draw: function () {
+                        // calculate the fps
+                        var fps = (++frames) / ((+new Date() -
+                                this.startTime()) / 1000);
+                        // clear (erase) the canvas
+                        canvas.width = canvas.width;
+                        // draw the fps in text on the canvas
+                        context.fillText("fps: " + fps.toFixed(2), 5, 10);
+                    }
+                });
 
-            start = document.getElementById("start");
+                start = document.getElementById("start");
 
-            // start click handler
-            utils.on(start, "click", function (e) {
-                if (false === game.isRunning()) {
-                    frames = 0;
-                    utils.log("starting game");
-                    game.start();
-                }
-            });
+                // start click handler
+                utils.on(start, "click", function (e) {
+                    if (false === game.isRunning()) {
+                        frames = 0;
+                        utils.log("starting game");
+                        game.start();
+                    }
+                });
 
-            stop = document.getElementById("stop");
+                stop = document.getElementById("stop");
 
-            // stop click handler
-            utils.on(stop, "click", function (e) {
-                if (true === game.isRunning()) {
-                    utils.log("stopping game");
-                    game.stop();
-                }
-            });
-        }
-    </script>
+                // stop click handler
+                utils.on(stop, "click", function (e) {
+                    if (true === game.isRunning()) {
+                        utils.log("stopping game");
+                        game.stop();
+                    }
+                });
+            }
+        </script>
     </head>
     <body onload="load()">
         <div class="controls">
