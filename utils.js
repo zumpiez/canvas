@@ -36,3 +36,19 @@ utils.on = function (el, event, fn) {
         el.attachEvent("on" + event, fn);
     }
 };
+
+// inheritance
+utils.inherit = function (child, parent) {
+    var t = typeof child;
+    if ("object" === t) {
+        if (2 < arguments.length) {
+            parent.apply(child,
+                Array.prototype.slice.call(arguments, 2));
+        } else {
+            parent.call(child);
+        }
+    } else if ("function" === t) {
+        child.prototype = new parent();
+        child.prototype.constructor = child;
+    }
+};
