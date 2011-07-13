@@ -29,8 +29,8 @@
                 };
 
                 // inspirations:
-                //http://gafferongames.com/game-physics/fix-your-timestep/
-                // http://blog.gameclosure.com/?p=111
+                //      http://gafferongames.com/game-physics/fix-your-timestep/
+                //      http://blog.gameclosure.com/?p=111
                 this.start = function(){
                     if(false === self.isRunning()){
                         start = last = +new Date();
@@ -87,10 +87,13 @@
             function load(){
                 var canvas, context, game, start, stop, frames = 0;
 
+                // find the canvas
                 canvas = document.getElementById("canvas");
+                // get the drawing context
                 context = canvas.getContext("2d");
 
-                var game = new Game({
+                // create the game
+                game = new Game({
                     draw:function(){
                         // calculate the fps
                         var fps = (++frames) / ((+new Date() -
@@ -103,6 +106,8 @@
                 });
 
                 start = document.getElementById("start");
+
+                // start click handler
                 addEventHandler(start, "click", function(e){
                     if(false === game.isRunning()){
                         frames = 0;
@@ -112,6 +117,8 @@
                 });
 
                 stop = document.getElementById("stop");
+
+                // stop click handler
                 addEventHandler(stop, "click", function(e){
                     if(true === game.isRunning()){
                         log("stopping game");
