@@ -27,6 +27,7 @@ function Game(options) {
 			// start the game loop as soon as possible
 			timeout = setTimeout(function gameLoop(){
 				var now = +new Date(), dt = now - last;
+				last = now;
 				accumulator += dt;
 				while(accumulator >= timestep){
 					if("function" === typeof options.update){
