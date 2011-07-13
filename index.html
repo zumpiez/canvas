@@ -1,7 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-</head>
-<body>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <title>Canvas</title>
+        <style>
+            #canvas {
+                border: 1px solid black;
+            }
+        </style>
+        <script>
+            function Game(options){
+                var self = this, timeout = null, start, last,
+                    accumulator, timestep;
+
+                options = options || {};
+
+                // in milliseconds
+                timestep = options.timestep || 10;
+
+                // is the game loop running?
+                this.isRunning = function(){
+                    return null !== timeout;
+                };
+
+                // when did the last game loop start in REAL TIME?
+                this.startTime = function(){
+                    return (self.isRunning()) ? start : 0;
+                };
+
+                // inspirations:
+                //      http://gafferongames.com/game-physics/fix-your-timestep/
+                //      http://blog.gameclosure.com/?p=111
+                this.start = function(){
+                    if(false === self.isRunning()){
+                        start = last = +new Date();
+                        // reset the accumulator
+                        accumulator = 0;
+                        // start the game loop as soon as possible
+                        timeout = setTimeout(function gameLoop(){
+                            var now = +new Date(), dt = now - last;
+                            accumulator += dt;
+                            while(accumulator >= timestep){
+                                if("function" === typeof options.update){
+                                    options.update.call(self, timestep);
+                                }
+                                accumulator -= timestep;
+                            }
+                            if("function" === typeof options.draw){
+                                options.draw.call(self);
+                            }
+                            if(true === self.isRunning()){
+                                timeout = setTimeout(gameLoop, 0);
+                            }
+                        }, 0);
+                    }
+                    return self;
+                };
+
+                // stop running the game loop
+                this.stop = function(){
+                    if(true === self.isRunning()){
+                        clearTimeout(timeout);
+                        timeout = null;
+                    }
+                    return self;
+                };
+            }
+
+            // i can haz log
+            function log(msg){
+                if("undefined" !== typeof console){
+                    console.log("" + msg);
+                }
+            }
+
+            // attach an event handler to a DOM element
+            function addEventHandler(el, e, h){
+                if("undefined" !== typeof el.addEventListener){
+                    el.addEventListener(e, h, false);
+                }else{
+                    el.attachEvent("on" + e, h);
+                }
+            }
+
+            // execute on body load
+            function load(){
+                var canvas, context, game, start, stop, frames = 0;
+
+                // find the canvas
+                canvas = document.getElementById("canvas");
+                // get the drawing context
+                context = canvas.getContext("2d");
+
+                // create the game
+                game = new Game({
+                    draw:function(){
+                        // calculate the fps
+                        var fps = (++frames) / ((+new Date() -
+                            this.startTime()) / 1000);
+                        // clear (erase) the canvas
+                        canvas.width = canvas.width;
+                        // draw the fps in text on the canvas
+                        context.fillText("fps: " + fps.toFixed(2), 5, 10);
+                    }
+                });
+
+                start = document.getElementById("start");
+
+                // start click handler
+                addEventHandler(start, "click", function(e){
+                    if(false === game.isRunning()){
+                        frames = 0;
+                        log("starting game");
+                        game.start();
+                    }
+                });
+
+                stop = document.getElementById("stop");
+
+                // stop click handler
+                addEventHandler(stop, "click", function(e){
+                    if(true === game.isRunning()){
+                        log("stopping game");
+                        game.stop();
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body onload="load()">
+        <div class="controls">
+            <input id="start" type="button" value="Start" />
+            <input id="stop" type="button" value="Stop" />
+        </div>
+        <div class="game">
+            <canvas id="canvas" width="300" height="300">
+            </canvas>
+        <div>
+    </body>
 </html>
