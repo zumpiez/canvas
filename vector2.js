@@ -1,6 +1,4 @@
-utils.namespace("game.vector2");
-
-game.Vector2 = function(x, y) {
+Vector2 = function(x, y) {
     var self = this;
 
     this.x = x || 0;
@@ -12,7 +10,7 @@ game.Vector2 = function(x, y) {
         x = self.x + vector.x;
         y = self.y + vector.y;
 
-        return new game.Vector2(x,y);
+        return new Vector2(x,y);
     };
 
     this.subtract = function(vector) {
@@ -21,7 +19,7 @@ game.Vector2 = function(x, y) {
         x = self.x - vector.x;
         y = self.y - vector.y;
 
-        return new game.Vector2(x,y);
+        return new Vector2(x,y);
     };
 
     this.scale = function(scalar) {
@@ -30,6 +28,6 @@ game.Vector2 = function(x, y) {
         x = self.x * scalar;
         y = self.x * scalar;
 
-        return new game.Vector2(x,y);
+        return new Vector2(x,y);
     };
 };
