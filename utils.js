@@ -21,10 +21,21 @@ utils.namespace = function (namespace) {
 
 //calls the passed function for each item in an array
 //function is called with the arguments (item, index, [args])
-utils.each = function (array, fn, args) {
-    var length = array.length, i;
-    for (i = 0; i < length; i++) {
-        fn(array[i], i, args);
+utils.each = function (enumerable, fn, args) {
+    var index, length;
+    if ("object" === typeof enumerable) {
+        if (enumerable instanceof Array) {
+            length = enumerable.length;
+            for (i = 0; i < length; i++) {
+                fn(enumerable[i], i, args);
+            }
+        } else {
+            for (index in enumerable) {
+                if (enumerable.hasOwnProperty(index)) {
+                    fn(enumerable[index], index, args);
+                }
+            }
+        }
     }
 };
 
