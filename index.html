@@ -13,6 +13,7 @@
         <script src="vector2.js"></script>
         <script src="game.js"></script>
         <script src="entity.js"></script>
+        <script src="input.js"></script>
         <script>
             // do the inheritance
             utils.inherit(Ball, Entity);
@@ -38,7 +39,12 @@
 
             // execute on body load
             function load() {
-                var canvas, context, game, start, stop, ball, frames = 0;
+                var canvas, context, game, start, stop, ball, keyboard, frames = 0;
+
+                // set up the keyboard
+                keyboard = Input.Keyboard.getInstance();
+                utils.on(window, "keyup", keyboard.onKeyup);
+                utils.on(window, "keydown", keyboard.onKeydown);
 
                 // find the canvas
                 canvas = document.getElementById("canvas");
@@ -55,6 +61,15 @@
                 // create the game
                 game = new Game({
                     update: function (gametime) {
+                        // for the lulz (proof of concept)
+                        var key, keys = Input.Keys;
+                        for(key in keys){
+                            if(keys.hasOwnProperty(key)){
+                                if(keyboard.isDown(keys[key])){
+                                    console.log("Key [" + key + "] is down");
+                                }
+                            }
+                        }
                         // update that ball!
                         ball.update(gametime);
                     },
