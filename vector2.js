@@ -34,3 +34,7 @@ Vector2 = function(x, y) {
         return new Vector2(x,y);
     };
 };
+
+Vector2.zero = function() {
+    return new Vector2(0,0);
+};
