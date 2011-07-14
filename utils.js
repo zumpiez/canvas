@@ -37,6 +37,14 @@ utils.on = function (el, event, fn) {
     }
 };
 
+utils.un = function (el, event, fn) {
+    if (!!el.removeEventListener) {
+        el.removeEventListener(event, fn, false);
+    } else {
+        el.detachEvent("on" + event, fn);
+    }
+};
+
 // inheritance
 utils.inherit = function (child, parent) {
     var t = typeof child;
