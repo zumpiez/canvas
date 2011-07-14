@@ -4,6 +4,7 @@ Vector2 = function(x, y) {
     this.x = x || 0;
     this.y = y || 0;
 
+    //add two vectors, immutable style
     this.add = function(vector) {
         var x, y;
 
@@ -13,6 +14,7 @@ Vector2 = function(x, y) {
         return new Vector2(x,y);
     };
 
+    //subtract two vectors, immutable style
     this.subtract = function(vector) {
         var x, y;
 
@@ -22,6 +24,7 @@ Vector2 = function(x, y) {
         return new Vector2(x,y);
     };
 
+    //scale a vector by a scalar amount, immutable style
     this.scale = function(scalar) {
         var x, y;
 
