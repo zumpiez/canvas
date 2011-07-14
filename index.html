@@ -62,14 +62,13 @@
                 game = new Game({
                     update: function (gametime) {
                         // for the lulz (proof of concept)
-                        var key, keys = Input.Keys;
-                        for(key in keys){
-                            if(keys.hasOwnProperty(key)){
-                                if(keyboard.isDown(keys[key])){
+                        utils.each(Input.Keys, function(keyCode, key) {
+                            if(Input.Keys.hasOwnProperty(key)){
+                                if(keyboard.isDown(Input.Keys[key])){
                                     utils.log("Key [" + key + "] is down");
                                 }
                             }
-                        }
+                        });
                         // update that ball!
                         ball.update(gametime);
                     },
