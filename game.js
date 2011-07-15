@@ -1,4 +1,4 @@
-Game = function(options) {
+function Game(options) {
     var self = this, timeout = null, start, last, game, accumulator, timestep;
 
     options = options || {};
@@ -74,4 +74,4 @@ Game = function(options) {
         // return self for chaining
         return self;
     };
-};
+}
