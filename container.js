@@ -14,10 +14,8 @@ function Container() {
     // remove a component
     this.removeComponent = function (component) {
         var length = components.length;
-        console.log(length);
         // iterate over the components
         while (length--) {
-            console.log("testing");
             // is this the right component to remove?
             if (component === components[length]) {
                 // get it out of here
