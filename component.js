@@ -1,10 +1,10 @@
 // abstract class (essentially)
-function Component() {
+Cale.Component = function () {
 
-}
+};
 
 // virtual method
-Component.prototype.receive = function (message) {
+Cale.Component.prototype.receive = function (message) {
     // for the chaining
     return this;
 };

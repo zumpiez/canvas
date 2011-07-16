@@ -1,25 +1,32 @@
-// setup inheritance
-utils.inherit(Entity, Container);
+(function () {
 
-function Entity(options) {
-    options = options || {};
-    
-    // continue the inheritance
-    utils.inherit(this, Container);
+    // alias the namespace for brevity
+    var Utils = Cale.Utils;
 
-    if (!!options.translation) {
-        this.translation = options.translation;
-    } else if (!!options.x || !!options.y) {
-        this.translation = new Vector2(options.x, options.y);
-    } else {
-        this.translation = Vector2.zero();
-    }
-}
+    // setup inheritance
+    Utils.inherit(Cale.Entity, Cale.Container);
 
-Entity.prototype.update = function (gametime) {
-    return this;
-};
+    Cale.Entity = function (options) {
+        options = options || {};
 
-Entity.prototype.draw = function (graphics) {
-    return this;
-};
+        // continue the inheritance
+        Utils.inherit(this, Cale.Container, options);
+
+        if (!!options.translation) {
+            this.translation = options.translation;
+        } else if (!!options.x || !!options.y) {
+            this.translation = new Cale.Vector2(options.x, options.y);
+        } else {
+            this.translation = Cale.Vector2.zero();
+        }
+    };
+
+    Cale.Entity.prototype.update = function (gametime) {
+        return this;
+    };
+
+    Cale.Entity.prototype.draw = function (graphics) {
+        return this;
+    };
+
+}());
