@@ -7,12 +7,12 @@ function Graphics(options) {
     type = typeof options.canvas;
 
     // let's get the canvas, somehow...
-    if ("object" === type) {
+    if (type === "object") {
         // null is an object :(
-        if(null !== options.canvas) {
+        if(options.canvas !== null) {
             canvas = options.canvas;
         }
-    } else if("string" === type) {
+    } else if(type === "string") {
         // treat canvas as an id selector
         canvas = document.getElementById(options.canvas);
     }
