@@ -25,7 +25,7 @@ function Graphics(options) {
     // get the drawing context
     this.context = function() {
         // lazy load the drawing context
-        if (!!context) {
+        if (!context) {
             context = canvas.getContext("2d");
         }
         return context;
