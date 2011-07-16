@@ -20,7 +20,7 @@ function Game(options) {
     //      http://gafferongames.com/game-physics/fix-your-timestep/
     //      http://blog.gameclosure.com/?p=111
     this.start = function () {
-        if (false === self.isRunning()) {
+        if (!self.isRunning()) {
             start = last = +new Date();
             // reset the accumulator and game time
             accumulator = game = 0;
@@ -36,7 +36,7 @@ function Game(options) {
                     game += timestep;
                     // check if an update function is defined and
                     // call it if necessary
-                    if ("function" === typeof options.update) {
+                    if (typeof options.update === "function") {
                         options.update.call(self, {
                             elapsedGameTime: timestep,
                             totalGameTime: game
@@ -47,12 +47,12 @@ function Game(options) {
                 }
                 // check if a draw function is defined and call it if
                 // necessary
-                if ("function" === typeof options.draw) {
+                if (typeof options.draw === "function") {
                     options.draw.call(self);
                 }
                 // check to see that the game hasn't been stopped and
                 // continue only if the game is still running
-                if (true === self.isRunning()) {
+                if (self.isRunning()) {
                     timeout = setTimeout(gameLoop, 0);
                 }
             }, 0);
@@ -64,7 +64,7 @@ function Game(options) {
     // stop running the game loop
     this.stop = function () {
         // check to see that the game is running
-        if (true === self.isRunning()) {
+        if (self.isRunning()) {
             // clear the timeout
             clearTimeout(timeout);
             // set the timeout to null so that the running logic

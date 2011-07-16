@@ -44,7 +44,7 @@
         return {
             getInstance: function () {
                 // lazy load the keyboard instance
-                if (null === instance) {
+                if (!instance) {
                     instance = initialize();
                 }
                 return instance;
