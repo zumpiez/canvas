@@ -9,41 +9,43 @@
                 border: 1px solid black;
             }
         </style>
-        <script src="cale.js"></script>
-        <script src="utils.js"></script>
-        <script src="component.js"></script>
-        <script src="container.js"></script>
-        <script src="vector2.js"></script>
-        <script src="entity.js"></script>
-        <script src="input.js"></script>
-        <script src="graphics.js"></script>
-        <script src="game.js"></script>
+        <script src="require.js"></script>
         <script>
-            // do the inheritance
-            Cale.Utils.inherit(Ball, Cale.Entity);
-            function Ball(options) {
-                options = options || {};
-                Cale.Utils.inherit(this, Cale.Entity, options);
-                this.radius = options.radius || 2;
-                // to update the physics/state of the entity
-                this.update = function (gametime) {
-                    // do nothing for now
-                    return this;
-                };
-                this.draw = function (graphics) {
-                    // draw the arc and fill it
-                    graphics.arc({
-                        x: this.translation.x,
-                        y: this.translation.y,
-                        radius: this.radius
-                    }).fill();
-                    return this;
-                };
-            }
+            require("cale");
+            require("utils");
+            require("component");
+            require("container");
+            require("vector2");
+            require("entity");
+            require("input");
+            require("graphics");
+            require("game");
 
             // execute on body load
             function load() {
                 var graphics, game, start, stop, ball, keyboard, frames = 0;
+
+                // do the inheritance
+                Cale.Utils.inherit(Ball, Cale.Entity);
+                function Ball(options) {
+                    options = options || {};
+                    Cale.Utils.inherit(this, Cale.Entity, options);
+                    this.radius = options.radius || 2;
+                    // to update the physics/state of the entity
+                    this.update = function (gametime) {
+                        // do nothing for now
+                        return this;
+                    };
+                    this.draw = function (graphics) {
+                        // draw the arc and fill it
+                        graphics.arc({
+                            x: this.translation.x,
+                            y: this.translation.y,
+                            radius: this.radius
+                        }).fill();
+                        return this;
+                    };
+                }
 
                 // set up the keyboard
                 keyboard = Cale.Input.Keyboard.getInstance();
