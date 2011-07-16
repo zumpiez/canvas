@@ -1,4 +1,4 @@
-function Graphics(options) {
+Cale.Graphics = function (options) {
     var self = this, type, canvas, context;
 
     options = options || {};
@@ -95,4 +95,4 @@ function Graphics(options) {
         context.stroke();
         return self;
     };
-}
+};

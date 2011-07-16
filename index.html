@@ -9,6 +9,7 @@
                 border: 1px solid black;
             }
         </style>
+        <script src="cale.js"></script>
         <script src="utils.js"></script>
         <script src="component.js"></script>
         <script src="container.js"></script>
@@ -19,10 +20,10 @@
         <script src="game.js"></script>
         <script>
             // do the inheritance
-            utils.inherit(Ball, Entity);
+            Cale.Utils.inherit(Ball, Cale.Entity);
             function Ball(options) {
                 options = options || {};
-                utils.inherit(this, Entity, options);
+                Cale.Utils.inherit(this, Cale.Entity, options);
                 this.radius = options.radius || 2;
                 // to update the physics/state of the entity
                 this.update = function (gametime) {
@@ -45,11 +46,11 @@
                 var graphics, game, start, stop, ball, keyboard, frames = 0;
 
                 // set up the keyboard
-                keyboard = Input.Keyboard.getInstance();
-                utils.on(window, "keyup", keyboard.onKeyup);
-                utils.on(window, "keydown", keyboard.onKeydown);
+                keyboard = Cale.Input.Keyboard.getInstance();
+                Cale.Utils.on(window, "keyup", keyboard.onKeyup);
+                Cale.Utils.on(window, "keydown", keyboard.onKeydown);
 
-                graphics = new Graphics({ canvas: "canvas" });
+                graphics = new Cale.Graphics({ canvas: "canvas" });
 
                 // the y axis is inverted (zero is top not bottom)
                 ball = new Ball({
@@ -59,13 +60,13 @@
                 });
 
                 // create the game
-                game = new Game({
+                game = new Cale.Game({
                     update: function (gametime) {
                         // for the lulz (proof of concept)
-                        utils.each(Input.Keys, function(keyCode, key) {
-                            if(Input.Keys.hasOwnProperty(key)){
-                                if(keyboard.isDown(Input.Keys[key])){
-                                    utils.log("Key [" + key + "] is down");
+                        Cale.Utils.each(Cale.Input.Keys, function(keyCode, key) {
+                            if(Cale.Input.Keys.hasOwnProperty(key)){
+                                if(keyboard.isDown(Cale.Input.Keys[key])){
+                                    Cale.Utils.log("Key [" + key + "] is down");
                                 }
                             }
                         });
@@ -90,10 +91,10 @@
                 start = document.getElementById("start");
 
                 // start click handler
-                utils.on(start, "click", function (e) {
+                Cale.Utils.on(start, "click", function (e) {
                     if (false === game.isRunning()) {
                         frames = 0;
-                        utils.log("starting game");
+                        Cale.Utils.log("starting game");
                         game.start();
                     }
                 });
@@ -101,9 +102,9 @@
                 stop = document.getElementById("stop");
 
                 // stop click handler
-                utils.on(stop, "click", function (e) {
+                Cale.Utils.on(stop, "click", function (e) {
                     if (true === game.isRunning()) {
-                        utils.log("stopping game");
+                        Cale.Utils.log("stopping game");
                         game.stop();
                     }
                 });
