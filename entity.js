@@ -14,6 +14,6 @@ Entity.prototype.update = function (gametime) {
     return this;
 };
 
-Entity.prototype.draw = function (context) {
+Entity.prototype.draw = function (graphics) {
     return this;
 };
