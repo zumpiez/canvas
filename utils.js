@@ -21,10 +21,27 @@ utils.namespace = function (namespace) {
 
 //calls the passed function for each item in an array
 //function is called with the arguments (item, index, [args])
-utils.each = function (array, fn, args) {
-    var length = array.length, i;
-    for (i = 0; i < length; i++) {
-        fn(array[i], i, args);
+utils.each = function (enumerable, fn, args) {
+    var index, length;
+    // null is an object
+    if (null !== enumerable) {
+        // make sure enumerable is an object
+        if ("object" === typeof enumerable) {
+            // if it is an array iterate the usual way
+            if (enumerable instanceof Array) {
+                length = enumerable.length;
+                for (i = 0; i < length; i++) {
+                    fn(enumerable[i], i, args);
+                }
+            } else {
+                // otherwise iterate over enumerable as an object
+                for (index in enumerable) {
+                    if (enumerable.hasOwnProperty(index)) {
+                        fn(enumerable[index], index, args);
+                    }
+                }
+            }
+        }
     }
 };
 
@@ -48,15 +65,17 @@ utils.un = function (el, event, fn) {
 // inheritance
 utils.inherit = function (child, parent) {
     var t = typeof child;
-    if ("object" === t) {
-        if (2 < arguments.length) {
-            parent.apply(child,
-                Array.prototype.slice.call(arguments, 2));
-        } else {
-            parent.call(child);
+    if (null !== child && null !== parent) {
+        if ("object" === t) {
+            if (2 < arguments.length) {
+                parent.apply(child,
+                    Array.prototype.slice.call(arguments, 2));
+            } else {
+                parent.call(child);
+            }
+        } else if ("function" === t) {
+            child.prototype = new parent();
+            child.prototype.constructor = child;
         }
-    } else if ("function" === t) {
-        child.prototype = new parent();
-        child.prototype.constructor = child;
     }
 };

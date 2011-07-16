@@ -10,9 +10,13 @@
             }
         </style>
         <script src="utils.js"></script>
+        <script src="component.js"></script>
+        <script src="container.js"></script>
         <script src="vector2.js"></script>
-        <script src="game.js"></script>
         <script src="entity.js"></script>
+        <script src="input.js"></script>
+        <script src="graphics.js"></script>
+        <script src="game.js"></script>
         <script>
             // do the inheritance
             utils.inherit(Ball, Entity);
@@ -25,36 +29,46 @@
                     // do nothing for now
                     return this;
                 };
-                this.draw = function (context) {
-                    context.beginPath();
-                    context.arc(this.translation.x, this.translation.y, this.radius,
-                        0, Math.PI * 2, false);
-                    context.closePath();
-                    context.fill();
-                    context.stroke();
+                this.draw = function (graphics) {
+                    // draw the arc and fill it
+                    graphics.arc({
+                        x: this.translation.x,
+                        y: this.translation.y,
+                        radius: this.radius
+                    }).fill();
                     return this;
                 };
             }
 
             // execute on body load
             function load() {
-                var canvas, context, game, start, stop, ball, frames = 0;
+                var graphics, game, start, stop, ball, keyboard, frames = 0;
 
-                // find the canvas
-                canvas = document.getElementById("canvas");
-                // get the drawing context
-                context = canvas.getContext("2d");
+                // set up the keyboard
+                keyboard = Input.Keyboard.getInstance();
+                utils.on(window, "keyup", keyboard.onKeyup);
+                utils.on(window, "keydown", keyboard.onKeydown);
 
-                // the y axis is inverted (zero is top corner not bottom)
+                graphics = new Graphics({ canvas: "canvas" });
+
+                // the y axis is inverted (zero is top not bottom)
                 ball = new Ball({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
+                    x: graphics.width() / 2,
+                    y: graphics.height() / 2,
                     radius: 10
                 });
 
                 // create the game
                 game = new Game({
                     update: function (gametime) {
+                        // for the lulz (proof of concept)
+                        utils.each(Input.Keys, function(keyCode, key) {
+                            if(Input.Keys.hasOwnProperty(key)){
+                                if(keyboard.isDown(Input.Keys[key])){
+                                    utils.log("Key [" + key + "] is down");
+                                }
+                            }
+                        });
                         // update that ball!
                         ball.update(gametime);
                     },
@@ -62,12 +76,14 @@
                         // calculate the fps
                         var fps = (++frames) / ((+new Date() -
                                 this.startTime()) / 1000);
-                        // clear (erase) the canvas
-                        canvas.width = canvas.width;
-                        // draw the fps in text on the canvas
-                        context.fillText("fps: " + fps.toFixed(2), 5, 10);
+                        // clear the screen and draw the fps in text
+                        graphics.clear().text({
+                            text: "fps: " + fps.toFixed(2),
+                            x: 5,
+                            y: 10
+                        });
                         // draw that ball!
-                        ball.draw(context);
+                        ball.draw(graphics);
                     }
                 });
 
