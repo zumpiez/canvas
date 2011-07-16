@@ -1,6 +1,12 @@
+// setup inheritance
+utils.inherit(Entity, Container);
+
 function Entity(options) {
     options = options || {};
     
+    // continue the inheritance
+    utils.inherit(this, Container);
+
     if(!!options.translation) {
         this.translation = options.translation;
     } else if (!!options.x || !!options.y) {
