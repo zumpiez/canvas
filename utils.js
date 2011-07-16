@@ -24,9 +24,9 @@ utils.namespace = function (namespace) {
 utils.each = function (enumerable, fn, args) {
     var index, length;
     // null is an object
-    if (null !== enumerable) {
+    if (!!enumerable) {
         // make sure enumerable is an object
-        if ("object" === typeof enumerable) {
+        if (typeof enumerable === "object") {
             // if it is an array iterate the usual way
             if (enumerable instanceof Array) {
                 length = enumerable.length;
@@ -65,15 +65,15 @@ utils.un = function (el, event, fn) {
 // inheritance
 utils.inherit = function (child, parent) {
     var t = typeof child;
-    if (null !== child && null !== parent) {
-        if ("object" === t) {
+    if (!!child && !!parent) {
+        if (t === "object") {
             if (2 < arguments.length) {
                 parent.apply(child,
                     Array.prototype.slice.call(arguments, 2));
             } else {
                 parent.call(child);
             }
-        } else if ("function" === t) {
+        } else if (t === "function") {
             child.prototype = new parent();
             child.prototype.constructor = child;
         }
