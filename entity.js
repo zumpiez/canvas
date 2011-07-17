@@ -1,4 +1,5 @@
 Cale.require("vector2");
+Cale.require("component");
 Cale.require("container");
 
 // setup inheritance

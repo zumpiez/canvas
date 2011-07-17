@@ -9,7 +9,7 @@
         root.Cale = previousCale;
         return this;
     };
-})();    
+})();
 
 //logs to console without blowin' up
 Cale.log = function (message) {
