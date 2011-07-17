@@ -1,4 +1,4 @@
-function Game(options) {
+Cale.Game = function (options) {
     var self = this, timeout = null, start, last, game, accumulator, timestep;
 
     options = options || {};
@@ -74,4 +74,4 @@ function Game(options) {
         // return self for chaining
         return self;
     };
-}
+};

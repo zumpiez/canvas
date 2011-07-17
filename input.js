@@ -1,13 +1,6 @@
 (function () {
 
-    // trap the context, and the previous Input, and create the namespace
-    var root = this, previousInput = root.Input, Input = root.Input = {};
-
-    // don't step on toes
-    Input.noConflict = function () {
-        root.Input = previousInput;
-        return this;
-    };
+    var Input = Cale.Input = {};
 
     // make us a singleton
     // http://nokarma.org/2011/02/27/javascript-game-development-keyboard-input/index.html

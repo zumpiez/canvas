@@ -1,4 +1,4 @@
-function Container() {
+Cale.Container = function () {
     var components = [];
 
     // add a component
@@ -47,4 +47,4 @@ function Container() {
         // for the chaining
         return this;
     };
-}
+};
