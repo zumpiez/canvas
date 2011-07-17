@@ -1,6 +1,6 @@
 (function () {
 
-    // trap the context, previous Cale, and create the root namespace
+    // trap the context, previous Cale, and create the root nd namespace
     var root = this, previousCale = root.Cale, Cale = root.Cale = {};
 
     // don't step on toes
@@ -20,7 +20,7 @@
     //this function will not destroy any objects that already exist.
     Cale.namespace = function (namespace) {
         var names = namespace.split("."), lastCreated = window;
-        utils.each(names, function (name, index, args) {
+        Cale.each(names, function (name, index, args) {
             lastCreated[name] = lastCreated[name] || {}; //leave it alone if it exists, or create it now
             lastCreated = lastCreated[name];
         }, lastCreated);
@@ -88,4 +88,5 @@
         }
     };
 
+    
 }());

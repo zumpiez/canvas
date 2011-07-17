@@ -1,16 +1,13 @@
 (function () {
 
-    // alias the namespace for brevity
-    var Utils = Cale.Utils;
-
     // setup inheritance
-    Utils.inherit(Cale.Entity, Cale.Container);
+    Cale.inherit(Cale.Entity, Cale.Container);
 
     Cale.Entity = function (options) {
         options = options || {};
 
         // continue the inheritance
-        Utils.inherit(this, Cale.Container, options);
+        Cale.inherit(this, Cale.Container, options);
 
         if (!!options.translation) {
             this.translation = options.translation;

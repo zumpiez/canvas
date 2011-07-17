@@ -12,7 +12,6 @@
         <script src="require.js"></script>
         <script>
             require("cale");
-            require("utils");
             require("component");
             require("container");
             require("vector2");
@@ -26,10 +25,10 @@
                 var graphics, game, start, stop, ball, keyboard, frames = 0;
 
                 // do the inheritance
-                Cale.Utils.inherit(Ball, Cale.Entity);
+                Cale.inherit(Ball, Cale.Entity);
                 function Ball(options) {
                     options = options || {};
-                    Cale.Utils.inherit(this, Cale.Entity, options);
+                    Cale.inherit(this, Cale.Entity, options);
                     this.radius = options.radius || 2;
                     // to update the physics/state of the entity
                     this.update = function (gametime) {
@@ -49,8 +48,8 @@
 
                 // set up the keyboard
                 keyboard = Cale.Input.Keyboard.getInstance();
-                Cale.Utils.on(window, "keyup", keyboard.onKeyup);
-                Cale.Utils.on(window, "keydown", keyboard.onKeydown);
+                Cale.on(window, "keyup", keyboard.onKeyup);
+                Cale.on(window, "keydown", keyboard.onKeydown);
 
                 graphics = new Cale.Graphics({ canvas: "canvas" });
 
@@ -65,10 +64,10 @@
                 game = new Cale.Game({
                     update: function (gametime) {
                         // for the lulz (proof of concept)
-                        Cale.Utils.each(Cale.Input.Keys, function(keyCode, key) {
+                        Cale.each(Cale.Input.Keys, function(keyCode, key) {
                             if(Cale.Input.Keys.hasOwnProperty(key)){
                                 if(keyboard.isDown(Cale.Input.Keys[key])){
-                                    Cale.Utils.log("Key [" + key + "] is down");
+                                    Cale.log("Key [" + key + "] is down");
                                 }
                             }
                         });
@@ -93,10 +92,10 @@
                 start = document.getElementById("start");
 
                 // start click handler
-                Cale.Utils.on(start, "click", function (e) {
+                Cale.on(start, "click", function (e) {
                     if (false === game.isRunning()) {
                         frames = 0;
-                        Cale.Utils.log("starting game");
+                        Cale.log("starting game");
                         game.start();
                     }
                 });
@@ -104,9 +103,9 @@
                 stop = document.getElementById("stop");
 
                 // stop click handler
-                Cale.Utils.on(stop, "click", function (e) {
+                Cale.on(stop, "click", function (e) {
                     if (true === game.isRunning()) {
-                        Cale.Utils.log("stopping game");
+                        Cale.log("stopping game");
                         game.stop();
                     }
                 });
