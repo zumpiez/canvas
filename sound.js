@@ -52,6 +52,7 @@ Cale.Sound = (function () {
                         // return this for chaining
                         return this;
                     },
+                    // resume
                     resume: function () {
                         // if there is something to resume
                         if (!!audio) {
@@ -65,6 +66,7 @@ Cale.Sound = (function () {
                         // return this for chaining
                         return this;
                     },
+                    // current volume
                     volume: function (volume) {
                         // trap the current audio volume
                         var prev = audio.volume;
