@@ -40,18 +40,26 @@ Cale.each = function (enumerable, fn, args) {
             if (enumerable instanceof Array) {
                 length = enumerable.length;
                 for (i = 0; i < length; i++) {
-                    fn(enumerable[i], i, args);
+                    // if the callback returns false then break
+                    if (fn(enumerable[i], i, args) === false) {
+                        return false;
+                    }
                 }
             } else {
                 // otherwise iterate over enumerable as an object
                 for (index in enumerable) {
                     if (enumerable.hasOwnProperty(index)) {
-                        fn(enumerable[index], index, args);
+                        // if the callback returns false then break
+                        if (fn(enumerable[index], index, args) === false) {
+                            return false;
+                        }
                     }
                 }
             }
+            return true;
         }
     }
+    return false;
 };
 
 // attach an event handler to a DOM element in a way that works in IE<9 as well as real browsers
@@ -89,6 +97,51 @@ Cale.inherit = function (child, parent) {
         }
     }
 };
+
+// closure for cale pub/sub implementation
+(function () {
+    var namespaces = {}, id = 0;
+
+    // subscribe
+    Cale.subscribe = function (namespace, callback) {
+        var token = id++;
+        if (!namespaces.hasOwnProperty(namespace)) {
+            namespaces[namespace] = [];
+        }
+        namespaces[namespace].push({
+            token: token,
+            callback: callback
+        });
+        return token;
+    };
+
+    // unsubscribe
+    Cale.unsubscribe = function (token) {
+        return !Cale.each(namespaces, function (subscribers) {
+            return Cale.each(subscribers, function (subscriber, index) {
+                if (token === subscriber.token) {
+                    subscribers.splice(index, 1);
+                    return false;
+                }
+            });
+        });
+    };
+
+    // publish
+    Cale.publish = function (namespace, message) {
+        var subscribers, length;
+        if (!namespaces.hasOwnProperty(namespace)) {
+            return false;
+        } else {
+            subscribers = namespaces[namespace];
+            length = subscribers.length;
+            while (length--) {
+                subscribers[length].callback(message);
+            }
+            return true;
+        }
+    };
+}());
 
 //closure for Cale.require
 (function () {
