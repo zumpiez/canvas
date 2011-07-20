@@ -63,6 +63,7 @@ Cale.Sound = function (options) {
                 callback.call(self);
             }
         }
+        // return self for chaining
         return self;
     };
 
