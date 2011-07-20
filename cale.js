@@ -198,17 +198,17 @@
         // create the require function
         Cale.require = function (requirement, callback) {
             var script = null, file = requirement, head;
+            // check to see if the file extension is supplied
+            if (file.search(/\.js$/) === -1) {
+                // add it if it wasn't
+                file += ".js";
+            }
             // if we haven't loaded this requirement then we need to do so
-            if (!loaded.hasOwnProperty(requirement)) {
+            if (!loaded.hasOwnProperty(file)) {
                 // create a script element
                 script = document.createElement("script");
                 // add the type attribute as it is required in HTML<5
                 script.setAttribute("type", "text/javascript");
-                // check to see if the file extension is supplied
-                if (file.search(/\.js$/) === -1) {
-                    // add it if it wasn't
-                    file += ".js";
-                }
                 // add the src attribute with the file
                 script.setAttribute("src", file);
                 // get the head tag (assume it is there)
