@@ -1,36 +1,82 @@
+// a sound class
 Cale.Sound = function (options) {
-    // a variable to store the actual audio file
-    var audio;
+    // store the actual audio object, store load state
+    var audio, isLoaded = false;
 
     // sanitize the options a bit
     options = options || {};
 
-    // the sound source
-    this.src = function () {
-        // if the audio object exists use its source,
-        // otherwise use the initial option source
-        return (!!audio) ? audio.src : options.src;
+    // the audio source
+    this.src = function (src) {
+        var prev;
+        // if we are functioning as a setter
+        if (!!src) {
+            // if the audio object exists
+            if (!!audio) {
+                // store the previous object
+                prev = audio.src;
+                // check to see if the source is different as we only
+                // need to change the source if it needs modification
+                if (prev !== src) {
+                    // set the new source on the audio object
+                    audio.src = src;
+                    // if it is then we need to reload the data
+                    isLoaded = false;
+                }
+                // return this for chaining
+                return this;
+            } else {
+                // otherwise store the source in options so that
+                // loading will work right
+                options.src = src;
+            }
+        } else {
+            // we are a getter
+            // if the audio object exists use its source,
+            // otherwise use the initial option source
+            return (!!audio) ? audio.src : options.src;
+        }
+    };
+
+    // load the audio file (potentially async)
+    this.load = function (callback) {
+        // capture this
+        var self = this;
+        // if the audio isn't loaded yet
+        if (!isLoaded) {
+            // create a new audio object
+            audio = new Audio(this.src());
+            // attach an event handler (this check is pivotal)
+            Cale.on(audio, "canplaythrough", function () {
+                // we are loaded now, and should be able to play through
+                // the entirety of the file
+                isLoaded = true;
+                // if a callback is defined then we should call it
+                if (typeof callback === "function") {
+                    callback.call(self);
+                }
+            });
+        } else {
+            // if a callback is defined then we should call it as the
+            // content should already be loaded
+            if (typeof callback === "function") {
+                callback.call(self);
+            }
+        }
+        return self;
     };
 
     // play from the beginning
     this.play = function () {
-        // if the audio object already exists
-        if (!!audio) {
-            // pause the current audio
-            audio.pause();
-            // delete the audio so we can recreate it
-            delete audio;
-        }
-        // create a new audio object
-        audio = new Audio(this.src());
-        // play the audio with the native API call
-        audio.play();
-        // check to see if a play callback is defined
-        if (typeof options.play === "function") {
-            options.play.call(this);
-        }
-        // return this for chaining
-        return this;
+        // load if we need to (potentially async) and return this for chaining
+        return this.load(function () {
+            // play the audio with the native API call
+            audio.play();
+            // check to see if a play callback is defined
+            if (typeof options.play === "function") {
+                options.play.call(this);
+            }
+        });
     };
 
     // pause
@@ -65,23 +111,54 @@ Cale.Sound = function (options) {
 
     // current volume
     this.volume = function (volume) {
-        // trap the current audio volume
-        var prev = audio.volume;
-        // if we are using this function as a setter and
-        // the volume is ACTUALLY going to be changed...
-        if (!!volume && volume !== prev) {
-            // change the volume
-            audio.volume = volume;
-            // check to see if a volume callback is defined
-            if (typeof options.volume === "function") {
-                options.volume.call(this, prev, volume);
+        // variable to trap the current audio volume
+        var prev;
+        // if we are using this function as a setter
+        if (!!volume) {
+            // if audio exists...
+            if (!!audio) {
+                // capture the current volume
+                prev = audio.volume;
+                // ...and the volume is actually changing
+                if (volume !== prev) {
+                    // then change the volume
+                    audio.volume = volume;
+                    // check to see if a volume callback is defined
+                    if (typeof options.volume === "function") {
+                        options.volume.call(this, prev, volume);
+                    }
+                }
             }
             // return this for chaining
             return this;
         } else {
             // otherwise treat this like a getter and return
-            // the current volume
-            return prev;
+            // the current volume if we can or one
+            return (!!audio) ? audio.volume : 1;
         }
     };
+
+    // toggle mute
+    this.mute = function () {
+        // if we even have an audio object yet
+        if (!!audio) {
+            // toggle the muted state
+            audio.muted = !audio.muted;
+        }
+        // return this for chaining
+        return this;
+    };
+
+    // if the data should be pre-loaded, or auto played
+    if (options.shouldAutoLoad === true || options.shouldAutoPlay === true) {
+        // call the load function (potentially async!)
+        this.load(function () {
+            // we make this check because it is possible that only the
+            // data was meant to be loaded, and not played automatically
+            if (options.shouldAutoPlay === true) {
+                // then play it
+                this.play();
+            }
+        });
+    }
 };
