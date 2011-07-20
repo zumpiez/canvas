@@ -24,7 +24,9 @@
 
     // logs to console without blowin' up
     Cale.log = function (message) {
+        // if console is defined
         if (!!console) {
+            // log a message
             console.log(message);
         }
     };
@@ -75,22 +77,30 @@
     // attach an event handler to a DOM element in a way that works in IE<9 as
     // well as real browsers
     Cale.on = function (el, event, fn) {
+        // redefine this function as the correct native method for the browser
+        // (basically lazy loading)
         Cale.on = (!!el.addEventListener) ? function (el, event, fn) {
             el.addEventListener(event, fn, false);
         } : function (el, event, fn) {
             el.attachEvent("on" + event, fn);
         };
+        // call the newly redefined function (from here on out the redefined
+        // function will be used instead of this function body)
         Cale.on(el, event, fn);
     };
 
     // detach an event handler from a DOM element in a way that works in IE<9
     // as well as real browsers
     Cale.un = function (el, event, fn) {
+        // redefine this function as the correct native method for the browser
+        // (basically lazy loading)
         Cale.un = (!!el.removeEventListener) ? function (el, event, fn) {
             el.removeEventListener(event, fn, false);
         } : function (el, event, fn) {
             el.detachEvent("on" + event, fn);
         };
+        // call the newly redefined function (from here on out the redefined
+        // function will be used instead of this function body)
         Cale.un(el, event, fn);
     };
 
@@ -118,24 +128,39 @@
 
         // subscribe
         Cale.subscribe = function (namespace, callback) {
-            var token = id;
+            // generate the unique subscriber token
+            var token = (+new Date() * 100) + (id % 100);
+            // increment id (unique subscriber id)
             id += 1;
+            // if no subscribers exist for this namespace then create the
+            // namespace and corresponding subscribers array
             if (!namespaces.hasOwnProperty(namespace)) {
                 namespaces[namespace] = [];
             }
+            // add this subscriber to the namespace subscriptions
             namespaces[namespace].push({
                 token: token,
                 callback: callback
             });
+            // return the unique subscriber token
             return token;
         };
 
         // unsubscribe
         Cale.unsubscribe = function (token) {
+            // iterate over the subscribers across all namespaces and return
+            // the result of the iteration (as a false return value will
+            // cause us to break from the loop indicating success)
             return !Cale.each(namespaces, function (subscribers) {
+                // iterate over the subribers in a single namespace and return
+                // the result of the iteration (as a false return value will
+                // cause us to break from the loop indicating success)
                 return Cale.each(subscribers, function (subscriber, index) {
+                    // if this is the subscriber wishing to unsubscribe
                     if (token === subscriber.token) {
+                        // remove them from the array of subscribers
                         subscribers.splice(index, 1);
+                        // return false to exit the loop
                         return false;
                     }
                 });
@@ -144,13 +169,20 @@
 
         // publish
         Cale.publish = function (namespace, message) {
+            // alias of namespace subscribers, and subscribers length
             var subscribers, length;
+            // if no subscribers exist for this namespace then forego work
             if (!namespaces.hasOwnProperty(namespace)) {
                 return false;
             } else {
+                // alias the subscribers array for the namespace
                 subscribers = namespaces[namespace];
+                // capture the length
                 length = subscribers.length;
+                // iterate over the number of subscribers (in reverse order
+                // for speed)
                 while (length--) {
+                    // send the message to the current subscriber
                     subscribers[length].callback(message);
                 }
                 return true;
