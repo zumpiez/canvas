@@ -193,11 +193,11 @@
     //closure for Cale.require
     (function () {
         // a map that will store the loaded files, and DOM position
-        var loaded = {}, lastScript;
+        var loaded = {}, head, lastScript;
 
         // create the require function
         Cale.require = function (requirement, callback) {
-            var script = null, file = requirement, head;
+            var script = null, file = requirement;
             // check to see if the file extension is supplied
             if (file.search(/\.js$/) === -1) {
                 // add it if it wasn't
@@ -212,7 +212,7 @@
                 // set the source of the script to the file
                 script.src = file;
                 // get the head tag (assume it is there)
-                head = document.getElementsByTagName("head")[0];
+                head = head || document.getElementsByTagName("head")[0];
                 // if this is the first script insert it as the first
                 // child, otherwise insert it as the next child (which
                 // can potentially be the last)
