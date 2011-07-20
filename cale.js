@@ -209,8 +209,8 @@
                 script = document.createElement("script");
                 // add the type attribute as it is required in HTML<5
                 script.setAttribute("type", "text/javascript");
-                // add the src attribute with the file
-                script.setAttribute("src", file);
+                // set the source of the script to the file
+                script.src = file;
                 // get the head tag (assume it is there)
                 head = document.getElementsByTagName("head")[0];
                 // if this is the first script insert it as the first
