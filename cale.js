@@ -131,6 +131,7 @@ Cale.inherit = function (child, parent) {
 
 //requires
 Cale.require("input");
+Cale.require("sound");
 Cale.require("graphics");
 Cale.require("game");
 Cale.require("entity");
