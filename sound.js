@@ -20,7 +20,7 @@ Cale.Sound = function (options) {
                 if (prev !== src) {
                     // set the new source on the audio object
                     audio.src = src;
-                    // if it is then we need to reload the data
+                    // we need to reload the data
                     isLoaded = false;
                 }
                 // return this for chaining
@@ -51,15 +51,15 @@ Cale.Sound = function (options) {
                 // we are loaded now, and should be able to play through
                 // the entirety of the file
                 isLoaded = true;
-                // if a callback is defined then we should call it
-                if (typeof callback === "function") {
+                // if callback is a function then call it
+                if (Cale.isFunction(callback)) {
                     callback.call(self);
                 }
             });
         } else {
-            // if a callback is defined then we should call it as the
-            // content should already be loaded
-            if (typeof callback === "function") {
+            // if callback is defined then call it as the content should
+            // already be loaded at this point
+            if (Cale.isFunction(callback)) {
                 callback.call(self);
             }
         }
@@ -73,8 +73,8 @@ Cale.Sound = function (options) {
         return this.load(function () {
             // play the audio with the native API call
             audio.play();
-            // check to see if a play callback is defined
-            if (typeof options.play === "function") {
+            // if play is a function then call it
+            if (Cale.isFunction(options.play)) {
                 options.play.call(this);
             }
         });
@@ -86,8 +86,8 @@ Cale.Sound = function (options) {
         if (!!audio) {
             // pause the audio with the native API call
             audio.pause();
-            // check to see if a pause callback is defined
-            if (typeof options.pause === "function") {
+            // if pause is a function then call it
+            if (Cale.isFunction(options.pause)) {
                 options.pause.call(this);
             }
         }
@@ -101,8 +101,8 @@ Cale.Sound = function (options) {
         if (!!audio) {
             // play the audio with the native API call
             audio.play();
-            // check to see if a resume callback is defined
-            if (typeof options.resume === "function") {
+            // if resume is a function then call it
+            if (Cale.isFunction(options.resume)) {
                 options.resume.call(this);
             }
         }
