@@ -235,7 +235,7 @@
         var loaded = {}, pending = {}, head, lastScript;
 
         // sanitize a requirement
-        function toScriptFile (requirement) {
+        function toScriptFile(requirement) {
             // assume a string for better or worse
             var file = requirement;
             // append the extension if it doesn't exist
@@ -246,7 +246,7 @@
         }
 
         // create a script tag from a requirement
-        function require (requirement) {
+        function require(requirement) {
             // the script element
             var script = document.createElement("script");
             // make this work with HTML<5
@@ -276,7 +276,7 @@
 
         // require a script, or array of scripts
         Cale.require = function (requirements, callback) {
-            var file, clone, isNew = false, satisfied = true;
+            var file, clone, check, isNew = false, satisfied = true;
             // single file, or multiple files?
             if (typeof requirements === "string") {
                 // make a file from the requirement
@@ -311,7 +311,7 @@
                 // make changes to it
                 clone = requirements.slice(0);
                 // check if all requirements have been loaded
-                function check (script) {
+                check = function (script) {
                     // iterate over the outstanding requirements
                     Cale.each(clone, function (requirement, index) {
                         // if this is an outstanding script
@@ -327,7 +327,7 @@
                             return false;
                         }
                     });
-                }
+                };
                 // iterate over the requirements
                 Cale.each(clone, function (requirement, index) {
                     // create a file from the requirement
