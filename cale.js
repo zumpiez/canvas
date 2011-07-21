@@ -169,22 +169,15 @@
 
         // publish
         Cale.publish = function (namespace, message) {
-            // alias of namespace subscribers, and subscribers length
-            var subscribers, length;
             // if no subscribers exist for this namespace then forego work
             if (!namespaces.hasOwnProperty(namespace)) {
                 return false;
             } else {
-                // alias the subscribers array for the namespace
-                subscribers = namespaces[namespace];
-                // capture the length
-                length = subscribers.length;
-                // iterate over the number of subscribers (in reverse order
-                // for speed)
-                while (length--) {
-                    // send the message to the current subscriber
-                    subscribers[length].callback(message);
-                }
+                // iterate over the subscribers in the namespace
+                Cale.each(namespaces[namespace], function (subscriber) {
+                    // notify the current subscriber
+                    subscriber.callback(message);
+                });
                 return true;
             }
         };
