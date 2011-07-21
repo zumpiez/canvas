@@ -27,19 +27,17 @@ Cale.Entity = function (options) {
 
     // remove a component
     this.removeComponent = function (component) {
-        var length = components.length;
-        // iterate over the components
-        while (length--) {
+        // iterate over the components and return true when the component
+        // has been removed
+        return !Cale.each(components, function (candidate, index) {
             // is this the right component to remove?
-            if (component === components[length]) {
+            if (component === candidate) {
                 // get it out of here
-                components.splice(length, 1);
-                // we removed it
-                return true;
+                components.splice(index, 1);
+                // break out of the each
+                return false;
             }
-        }
-        // we didn't remove it
-        return false;
+        });
     };
 
     // remove all components
@@ -52,12 +50,11 @@ Cale.Entity = function (options) {
 
     // send a message to the components
     this.send = function (message) {
-        var length = components.length;
         // iterate over the components
-        while (length--) {
+        Cale.each(components, function (component) {
             // notify
-            components[length].receive(message);
-        }
+            component.receive(message);
+        });
         // for the chaining
         return this;
     };
