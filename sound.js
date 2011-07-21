@@ -23,13 +23,13 @@ Cale.Sound = function (options) {
                     // we need to reload the data
                     isLoaded = false;
                 }
-                // return this for chaining
-                return this;
             } else {
                 // otherwise store the source in options so that
                 // loading will work right
                 options.src = src;
             }
+            // return this for chaining
+            return this;
         } else {
             // we are a getter
             // if the audio object exists use its source,
