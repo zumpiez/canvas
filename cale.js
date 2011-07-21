@@ -60,7 +60,7 @@
     // calls the passed function for each item in an array
     // function is called with the arguments (item, index, [args])
     Cale.each = function (enumerable, fn, args) {
-        var index, length;
+        var index;
         // is fn even a function?
         if (Cale.isFunction(fn)) {
             // is enumerable an array?
@@ -77,8 +77,8 @@
                 } else {
                     // this browser doesn't support the native every function
                     // so we should just iterate the old fashioned way
-                    length = enumerable.length;
-                    for (index = 0; index < length; index++) {
+                    // DON'T CACHE THE LENGTH AS IT CAN CHANGE UNDER US!!!
+                    for (index = 0; index < enumerable.length; index++) {
                         // if the callback returns false then break
                         if (fn(enumerable[index], index, args) === false) {
                             return false;
@@ -231,47 +231,146 @@
 
     //closure for Cale.require
     (function () {
-        // a map that will store the loaded files, and DOM position
-        var loaded = {}, head, lastScript;
+        // cache, pending with callbacks, lazy load head, last DOM position
+        var loaded = {}, pending = {}, head, lastScript;
 
-        // create the require function
-        Cale.require = function (requirement, callback) {
-            var script = null, file = requirement;
-            // check to see if the file extension is supplied
+        // sanitize a requirement
+        function toScriptFile (requirement) {
+            // assume a string for better or worse
+            var file = requirement;
+            // append the extension if it doesn't exist
             if (file.search(/\.js$/) === -1) {
-                // add it if it wasn't
                 file += ".js";
             }
-            // if we haven't loaded this requirement then we need to do so
-            if (!loaded.hasOwnProperty(file)) {
-                // create a script element
-                script = document.createElement("script");
-                // add the type attribute as it is required in HTML<5
-                script.setAttribute("type", "text/javascript");
-                // set the source of the script to the file
-                script.src = file;
-                // get the head tag (assume it is there)
-                head = head || document.getElementsByTagName("head")[0];
-                // if this is the first script insert it as the first
-                // child, otherwise insert it as the next child (which
-                // can potentially be the last)
-                lastScript = head.insertBefore(script, (!lastScript) ?
-                    head.firstChild : lastScript.nextSibling);
-                // register that the script has been loaded
-                loaded[file] = true;
-            }
-            // if a callback is a function then we need to invoke that sucker
-            if (Cale.isFunction(callback)) {
-                callback.call();
+            return file;
+        }
+
+        // create a script tag from a requirement
+        function require (requirement) {
+            // the script element
+            var script = document.createElement("script");
+            // make this work with HTML<5
+            script.setAttribute("type", "text/javascript");
+            // we want to load async
+            script.async = true;
+            // we need to add a handler to capture when a script loads
+            Cale.on(script, "load", function () {
+                // set load completed
+                loaded[requirement] = true;
+                // iterate over callbacks for this requirement
+                Cale.each(pending[requirement], function (callback) {
+                    // notify them
+                    callback(requirement);
+                });
+                // remove the callbacks
+                delete pending[requirement];
+            });
+            // set the script source
+            script.src = requirement;
+            // lazy load head
+            head = head || document.getElementsByTagName("head")[0];
+            // insert the script element somewhere...
+            lastScript = head.insertBefore(script, (!lastScript) ?
+                head.firstChild : lastScript.nextSibling);
+        }
+
+        // require a script, or array of scripts
+        Cale.require = function (requirements, callback) {
+            var file, clone, isNew = false, satisfied = true;
+            // single file, or multiple files?
+            if (typeof requirements === "string") {
+                // make a file from the requirement
+                file = toScriptFile(requirements);
+                // if this has already loaded
+                if (loaded.hasOwnProperty(file)) {
+                    // if callback is a function then call it
+                    if (Cale.isFunction(callback)) {
+                        callback(file);
+                    }
+                } else {
+                    // otherwise if this hasn't been requested for load
+                    if (!pending.hasOwnProperty(file)) {
+                        // create the property with an array for callbacks
+                        pending[file] = [];
+                        // signify that a require call is necessary
+                        isNew = true;
+                    }
+                    // if callback is a function
+                    if (Cale.isFunction(callback)) {
+                        // add it to the list of callbacks for this requirement
+                        pending[file].push(callback);
+                    }
+                    // is this a new request?
+                    if (isNew) {
+                        // then require (load) the file
+                        require(file);
+                    }
+                }
+            } else if (Cale.isArray(requirements)) {
+                // we need to make a copy of the array because we need to
+                // make changes to it
+                clone = requirements.slice(0);
+                // check if all requirements have been loaded
+                function check (script) {
+                    // iterate over the outstanding requirements
+                    Cale.each(clone, function (requirement, index) {
+                        // if this is an outstanding script
+                        if (requirement === script) {
+                            // remove it from the list
+                            clone.splice(index, 1);
+                            // if we are all done and callback is a function
+                            if (!clone.length && Cale.isFunction(callback)) {
+                                // call it
+                                callback(requirements);
+                            }
+                            // break out of the each as we are done here
+                            return false;
+                        }
+                    });
+                }
+                // iterate over the requirements
+                Cale.each(clone, function (requirement, index) {
+                    // create a file from the requirement
+                    file = toScriptFile(requirement);
+                    // we need to make sure that our clone has the sanitized
+                    // file names instead of any shorthand, so that later in
+                    // the check we can identify scripts correctly
+                    if (file !== requirement) {
+                        clone[index] = file;
+                    }
+                    // if the requirement hasn't loaded yet
+                    if (!loaded.hasOwnProperty(file)) {
+                        // then we haven't satisifed the requirements
+                        satisfied = false;
+                        // if this script hasn't been requested for load
+                        if (!pending.hasOwnProperty(file)) {
+                            // create the request with an array for callbacks
+                            pending[file] = [];
+                            // signify that a require call is necessary
+                            isNew = true;
+                        }
+                        // push the check function for this file
+                        pending[file].push(check);
+                        // is this a new request?
+                        if (isNew) {
+                            // then require (load) the file
+                            require(file);
+                        }
+                    } else {
+                        // we've loaded the file so remove it from the array
+                        clone.splice(index, 1);
+                    }
+                });
+                // if we iterated over all the requirements and they are all
+                // loaded, and callback is a function
+                if (satisfied && Cale.isFunction(callback)) {
+                    // signal completion
+                    callback(requirements);
+                }
             }
         };
     }());
 
     //requires
-    Cale.require("input");
-    Cale.require("sound");
-    Cale.require("graphics");
-    Cale.require("camera");
-    Cale.require("game");
-    Cale.require("entity");
+    Cale.require(["input", "sound", "graphics", "camera", "game", "entity"]);
 }());
