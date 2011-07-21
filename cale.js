@@ -39,11 +39,24 @@
         if (!!enumerable && typeof enumerable === "object") {
             // if it is an array iterate the usual way
             if (enumerable instanceof Array) {
-                length = enumerable.length;
-                for (index = 0; index < length; index++) {
-                    // if the callback returns false then break
-                    if (fn(enumerable[index], index, args) === false) {
-                        return false;
+                // if the browser supports a native every function then
+                // we should leverage that as it will be faster
+                if (!!Array.prototype.every) {
+                    // the return value will be true if we didn't break out
+                    // of the every loop, and false if we did
+                    return enumerable.every(function (item, index) {
+                        // if the callback returns false then break
+                        return (fn(item, index, args) !== false);
+                    });
+                } else {
+                    // this browser doesn't support the native every function
+                    // so we should just iterate the old fashioned way
+                    length = enumerable.length;
+                    for (index = 0; index < length; index++) {
+                        // if the callback returns false then break
+                        if (fn(enumerable[index], index, args) === false) {
+                            return false;
+                        }
                     }
                 }
             } else {
