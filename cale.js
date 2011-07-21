@@ -271,6 +271,7 @@
     Cale.require("input");
     Cale.require("sound");
     Cale.require("graphics");
+    Cale.require("camera");
     Cale.require("game");
     Cale.require("entity");
 }());
