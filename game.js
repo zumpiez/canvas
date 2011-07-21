@@ -34,9 +34,8 @@ Cale.Game = function (options) {
                 while (accumulator >= timestep) {
                     // increment the game time
                     game += timestep;
-                    // check if an update function is defined and
-                    // call it if necessary
-                    if (typeof options.update === "function") {
+                    // if update is a function then call it
+                    if (Cale.isFunction(options.update)) {
                         options.update.call(self, {
                             elapsedGameTime: timestep,
                             totalGameTime: game
@@ -45,9 +44,8 @@ Cale.Game = function (options) {
                     // decrement the fixed step from the accumulator
                     accumulator -= timestep;
                 }
-                // check if a draw function is defined and call it if
-                // necessary
-                if (typeof options.draw === "function") {
+                // if draw is a function then call it
+                if (Cale.isFunction(options.draw)) {
                     options.draw.call(self);
                 }
                 // check to see that the game hasn't been stopped and
