@@ -22,6 +22,32 @@
         return this;
     };
 
+    // is this an object?
+    Cale.isObject = function (candidate) {
+        // do the magic and return the result
+        return (!!candidate && typeof candidate === "object" &&
+            !(candidate instanceof Array));
+    };
+
+    // is this an array?
+    Cale.isArray = function (candidate) {
+        // if a native isArray function exists leverage it
+        Cale.isArray = (!!Array.isArray) ?
+            Array.isArray : function (candidate) {
+                // do the magic and return the result since the browser won't
+                // do the heavy lifting for us
+                return (!!candidate && typeof candidate === "object" &&
+                    candidate instanceof Array);
+            };
+        // finish lazy loading the isArray function by calling the new version
+        return Cale.isArray(candidate);
+    };
+
+    // is this a function?
+    Cale.isFunction = function (candidate) {
+        return (!!candidate && typeof candidate === "function");
+    };
+
     // logs to console without blowin' up
     Cale.log = function (message) {
         // if console is defined
@@ -35,10 +61,10 @@
     // function is called with the arguments (item, index, [args])
     Cale.each = function (enumerable, fn, args) {
         var index, length;
-        // null is an object, make sure enumerable is an object
-        if (!!enumerable && typeof enumerable === "object") {
-            // if it is an array iterate the usual way
-            if (enumerable instanceof Array) {
+        // is fn even a function?
+        if (Cale.isFunction(fn)) {
+            // is enumerable an array?
+            if (Cale.isArray(enumerable)) {
                 // if the browser supports a native every function then
                 // we should leverage that as it will be faster
                 if (!!Array.prototype.every) {
@@ -58,9 +84,10 @@
                             return false;
                         }
                     }
+                    return true;
                 }
-            } else {
-                // otherwise iterate over enumerable as an object
+            } else if (Cale.isObject(enumerable)) {
+                // no, enumerable is an object
                 for (index in enumerable) {
                     if (enumerable.hasOwnProperty(index)) {
                         // if the callback returns false then break
@@ -69,9 +96,10 @@
                         }
                     }
                 }
+                return true;
             }
-            return true;
         }
+        // even worse still enumerable or fn is something unrecognizable
         return false;
     };
 
@@ -141,21 +169,26 @@
 
         // subscribe
         Cale.subscribe = function (namespace, callback) {
-            // generate the unique subscriber token
-            var token = (+new Date() * 100) + (id % 100);
-            // increment id (unique subscriber id)
-            id += 1;
-            // if no subscribers exist for this namespace then create the
-            // namespace and corresponding subscribers array
-            if (!namespaces.hasOwnProperty(namespace)) {
-                namespaces[namespace] = [];
+            var token = false;
+            // if callback is a function then we can proceed
+            if (Cale.isFunction(callback)) {
+                // generate the unique subscriber token
+                token = (+new Date() * 100) + (id % 100);
+                // increment id (unique subscriber id)
+                id += 1;
+                // if no subscribers exist for this namespace then create the
+                // namespace and corresponding subscribers array
+                if (!namespaces.hasOwnProperty(namespace)) {
+                    namespaces[namespace] = [];
+                }
+                // add this subscriber to the namespace subscriptions
+                namespaces[namespace].push({
+                    token: token,
+                    callback: callback
+                });
             }
-            // add this subscriber to the namespace subscriptions
-            namespaces[namespace].push({
-                token: token,
-                callback: callback
-            });
-            // return the unique subscriber token
+            // return the unique subscriber token if callback is a function
+            // and false otherwise (indicating a failure)
             return token;
         };
 
@@ -227,9 +260,8 @@
                 // register that the script has been loaded
                 loaded[file] = true;
             }
-            // if a callback has been defined and it is a function then we
-            // need to invoke that sucker
-            if (typeof callback === "function") {
+            // if a callback is a function then we need to invoke that sucker
+            if (Cale.isFunction(callback)) {
                 callback.call();
             }
         };
