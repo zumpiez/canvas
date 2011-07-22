@@ -1,7 +1,7 @@
 Cale.require(["vector2", "component"], function () {
     Cale.Entity = function (options) {
-        // private variable for storing components
-        var components = [];
+        // private variable for storing components, entity children
+        var components = [], children = [];
 
         options = options || {};
 
@@ -46,13 +46,51 @@ Cale.require(["vector2", "component"], function () {
             return this;
         };
 
+        this.addChild = function (child) {
+            // set the parent of the child to this
+            child.parent = this;
+            // add the child to the list of children
+            children.push(child);
+            // for the chaining
+            return this;
+        };
+
+        this.removeChild = function (child) {
+            // iterate over the children and return true when the child has
+            // been removed
+            return !Cale.each(children, function (candidate, index) {
+                // is this the right child to remove?
+                if (candidate === child) {
+                    // remove the child
+                    children.splice(index, 1);
+                    // break out of the each
+                    return false;
+                }
+            });
+        };
+
+        this.removeAllChildren = function () {
+            // kill all the children
+            children = [];
+            // for the chaining
+            return this;
+        };
+
         // send a message to the components
-        this.send = function (message) {
+        this.send = function (message, propogate) {
             // iterate over the components
             Cale.each(components, function (component) {
                 // notify
                 component.receive(message);
             });
+            // if we should propogate to the entity children
+            if (!!propogate) {
+                // iterate over the children
+                Cale.each(children, function (child) {
+                    // notify
+                    child.send(message);
+                });
+            }
             // for the chaining
             return this;
         };
