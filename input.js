@@ -15,27 +15,31 @@
                 // an index for key events
                 var pressed = {};
 
+                // attach a keydown handler to the window
+                Cale.on(window, "keydown", function (e) {
+                    // cross browser event
+                    e = (!!e) ? e : window.event;
+                    // add the property to the object (value doesn't matter)
+                    pressed[e.keyCode] = true;
+                    // alert the horde (potentially do nothing)
+                    Cale.publish(NS.KEYDOWN, e);
+                });
+
+                // attach a keyup handler to the window
+                Cale.on(window, "keyup", function (e) {
+                    // cross browser event
+                    e = (!!e) ? e : window.event;
+                    // delete the property from the object
+                    delete pressed[e.keyCode];
+                    // alert the horde (potentially do nothing)
+                    Cale.publish(NS.KEYUP, e);
+                });
+
                 // create the keyboard object literal and return it
                 return {
                     isDown: function (keyCode) {
                         // if the property exists the key is down
                         return pressed.hasOwnProperty(keyCode);
-                    },
-                    onKeydown: function (e) {
-                        // cross browser event
-                        e = (!!e) ? e : window.event;
-                        // alert the horde (potentially do nothing)
-                        Cale.publish(NS.KEYDOWN, e);
-                        // add the property to the object (value doesn't matter)
-                        pressed[e.keyCode] = true;
-                    },
-                    onKeyup: function (e) {
-                        // cross browser event
-                        e = (!!e) ? e : window.event;
-                        // alert the horde (potentially do nothing)
-                        Cale.publish(NS.KEYUP, e);
-                        // delete the property from the object
-                        delete pressed[e.keyCode];
                     }
                 };
             }
