@@ -372,5 +372,6 @@
     }());
 
     //requires
-    Cale.require(["input", "sound", "graphics", "camera", "game", "entity"]);
+    Cale.require(["system/input", "system/sound", "system/graphics",
+        "engine/camera", "game", "engine/entity"]);
 }());
