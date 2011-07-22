@@ -88,7 +88,7 @@ Cale.require(["vector2", "component"], function () {
                 // iterate over the children
                 Cale.each(children, function (child) {
                     // notify
-                    child.send(message);
+                    child.send(message, propogate);
                 });
             }
             // for the chaining
