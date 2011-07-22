@@ -1,4 +1,4 @@
-Cale.require(["vector2", "engine/component"], function () {
+Cale.require(["support/math/vector2", "engine/component"], function () {
     Cale.Entity = function (options) {
         // parent, private variable for storing components, entity children
         var parent = null, components = [], children = [];

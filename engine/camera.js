@@ -1,5 +1,5 @@
 // we need them there vectors
-Cale.require("vector2", function () {
+Cale.require("support/math/vector2", function () {
     // camera obscura
     // guidance: http://forums.create.msdn.com/forums/p/77063/468360.aspx
     Cale.Camera = function (options) {
