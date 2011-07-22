@@ -1,7 +1,7 @@
 Cale.require(["vector2", "component"], function () {
     Cale.Entity = function (options) {
-        // private variable for storing components, entity children
-        var components = [], children = [];
+        // parent, private variable for storing components, entity children
+        var parent = null, components = [], children = [];
 
         options = options || {};
 
@@ -13,10 +13,23 @@ Cale.require(["vector2", "component"], function () {
             this.translation = Cale.Vector2.zero();
         }
 
+        // get or set parent
+        this.parent = function (p) {
+            if (!!p) {
+                // change the parent
+                parent = p;
+                // return this for chaining
+                return this;
+            } else {
+                // return the value of parent
+                return parent;
+            }
+        };
+
          // add a component
         this.addComponent = function (component) {
             // set the container of the component to this
-            component.container = this;
+            component.container(this);
             // add the component to the list
             components.push(component);
             // for the chaining
@@ -48,7 +61,7 @@ Cale.require(["vector2", "component"], function () {
 
         this.addChild = function (child) {
             // set the parent of the child to this
-            child.parent = this;
+            child.parent(this);
             // add the child to the list of children
             children.push(child);
             // for the chaining
