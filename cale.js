@@ -371,7 +371,42 @@
         };
     }());
 
-    //requires
-    Cale.require(["system/input", "system/sound", "system/graphics",
-        "engine/camera", "game", "engine/entity"]);
+    //require the configuration
+    Cale.require("configuration", function () {
+        // if there is something to include
+        if (!!Cale.Configuration.includes) {
+            // iterate over the includes
+            Cale.each(Cale.Configuration.includes, function (include) {
+                // create a variable that might be used to store a requirement
+                var dependency = null;
+                // if include is just a string
+                if (typeof include === "string") {
+                    // then treat this as a single file
+                    Cale.require(include);
+                } else if (Cale.isObject(include)) {
+                    // iterate over the sub component
+                    Cale.each(include, function (components, system) {
+                        // if the sub component is an array
+                        if (Cale.isArray(components)) {
+                            // copy the array as we are making changes to it
+                            dependency = components.slice(0);
+                            // iterate over the dependencies
+                            Cale.each(dependency, function (component, index) {
+                                // turn the dependency into a path
+                                dependency[index] = system + "/" + component;
+                            });
+                            // get all of the dependencies
+                            Cale.require(dependency);
+                        } else if (typeof components === "string") {
+                            // this is just one file so turn the dependecy
+                            // into a path
+                            dependency = system + "/" + components;
+                            // get the single depdency
+                            Cale.require(dependency);
+                        }
+                    });
+                }
+            });
+        }
+    });
 }());
