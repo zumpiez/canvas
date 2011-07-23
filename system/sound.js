@@ -7,26 +7,26 @@ Cale.Sound = function (options) {
     options = options || {};
 
     // the audio source
-    this.src = function (src) {
+    this.source = function (source) {
         var prev;
         // if we are functioning as a setter
-        if (!!src) {
+        if (!!source) {
             // if the audio object exists
             if (!!audio) {
                 // store the previous object
                 prev = audio.src;
                 // check to see if the source is different as we only
                 // need to change the source if it needs modification
-                if (prev !== src) {
+                if (prev !== source) {
                     // set the new source on the audio object
-                    audio.src = src;
+                    audio.src = source;
                     // we need to reload the data
                     isLoaded = false;
                 }
             } else {
                 // otherwise store the source in options so that
                 // loading will work right
-                options.src = src;
+                options.source = source;
             }
             // return this for chaining
             return this;
@@ -34,7 +34,7 @@ Cale.Sound = function (options) {
             // we are a getter
             // if the audio object exists use its source,
             // otherwise use the initial option source
-            return (!!audio) ? audio.src : options.src;
+            return (!!audio) ? audio.src : options.source;
         }
     };
 
