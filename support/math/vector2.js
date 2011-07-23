@@ -33,6 +33,11 @@ Cale.Vector2 = function(x, y) {
 
         return new Cale.Vector2(x,y);
     };
+    
+    // calculate the magnitude of a vector
+    this.magnitude = function () {
+        return Math.sqrt(self.x * self.x, self.y * self.y);
+    };
 };
 
 Cale.Vector2.zero = function() {
