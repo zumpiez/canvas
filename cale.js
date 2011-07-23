@@ -163,6 +163,31 @@
         }
     };
 
+    // class augmentation
+    Cale.augment = function (target, source) {
+        var index, length, to, from;
+        // sanitize to pending on type
+        to = Cale.isFunction(target) ? target.prototype : target;
+        // sanitize from pending on type
+        from = Cale.isFunction(source) ? source.prototype : source;
+        // if only a few properties should be copied
+        if (arguments.length > 2) {
+            // cache the length as that won't change
+            length = arguments.length;
+            // iterate over the arguments
+            for (index = 2; index < length; index++) {
+                // copy from source to target
+                to[arguments[index]] = from[arguments[index]];
+            }
+        } else {
+            // iterate over all properties in the source
+            Cale.each(from, function (property, name) {
+                // copy from souce to target
+                to[name] = property;
+            });
+        }
+    };
+
     // closure for cale pub/sub implementation
     (function () {
         var namespaces = {}, id = 0;
