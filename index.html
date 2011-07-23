@@ -20,6 +20,21 @@
                 (function () {
                     var keys = Cale.Input.Keys,
                         ballInputComponent = new Cale.InputComponent();
+                        
+                    Cale.augment(ballInputComponent, {
+                        update: function (container, keyboard) {
+                            if (keyboard.isDown(keys.LEFT)) {
+                                container.translation.x -= 1;
+                            } else if (keyboard.isDown(keys.RIGHT)) {
+                                container.translation.x += 1;
+                            }
+                            if (keyboard.isDown(keys.UP)) {
+                                container.translation.y -= 1;
+                            } else if (keyboard.isDown(keys.DOWN)) {
+                                container.translation.y += 1;
+                            }
+                        }
+                    });
 
                     // do the inheritance
                     Cale.inherit(Ball, Cale.Entity);
@@ -27,9 +42,11 @@
                         options = options || {};
                         Cale.inherit(this, Cale.Entity, options);
                         this.radius = options.radius || 2;
+                        this.inputComponent = ballInputComponent;
                         // to update the physics/state of the entity
                         this.update = function (gametime) {
-                            return this.send({ type: "input"});
+                            this.inputComponent.update(this,
+                                Cale.Input.Keyboard.getInstance());
                         };
                         this.draw = function (graphics) {
                             // draw the arc and fill it
@@ -48,30 +65,13 @@
                         y: graphics.height() / 2,
                         radius: 10
                     });
-
-                    Cale.augment(ballInputComponent, {
-                        update: function (container, keyboard) {
-                            if (keyboard.isDown(keys.LEFT)) {
-                                container.translation.x -= 1;
-                            } else if (keyboard.isDown(keys.RIGHT)) {
-                                container.translation.x += 1;
-                            }
-                            if (keyboard.isDown(keys.UP)) {
-                                container.translation.y -= 1;
-                            } else if (keyboard.isDown(keys.DOWN)) {
-                                container.translation.y += 1;
-                            }
-                        }
-                    });
-
-                    ball.addComponent(ballInputComponent);
                 }());
 
                 // create the game
                 game = new Cale.Game({
                     update: function (gametime) {
                         // update that ball!
-                        ball.update(gametime);
+                        Cale.publish("update", gametime);
                     },
                     draw: function () {
                         // calculate the fps
@@ -83,8 +83,7 @@
                             x: 5,
                             y: 10
                         });
-                        // draw that ball!
-                        ball.draw(graphics);
+                        Cale.publish("draw", graphics);
                     }
                 });
 

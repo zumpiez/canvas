@@ -2,8 +2,6 @@
 Cale.require(["system/input", "engine/component"], function () {
     // essentially a static class variable
     var keyboard = Cale.Input.Keyboard.getInstance();
-    // set up the inheritance
-    Cale.inherit(Cale.InputComponent, Cale.Component);
     // define the input component
     Cale.InputComponent = function() {
         // continue the inheritance
@@ -26,4 +24,7 @@ Cale.require(["system/input", "engine/component"], function () {
     Cale.InputComponent.prototype.update = function (container, keyboard) {
 
     };
+    
+    // set up the inheritance
+    Cale.inherit(Cale.InputComponent, Cale.Component);
 });
