@@ -396,42 +396,38 @@
         };
     }());
 
-    //require the configuration
+    // require the configuration
     Cale.require("configuration", function () {
-        // if there is something to include
+        // private recursive function for including requirements
+        function include(requirement, parent) {
+            // this is the terminal case as it means that we have a file
+            if (typeof requirement === "string") {
+                // load the requirement
+                Cale.require((typeof parent === "string") ?
+                    parent + "/" + requirement : requirement);
+            } else if (Cale.isArray(requirement)) {
+                // iterate over the array of requirements
+                Cale.each(requirement, function (item) {
+                    // recursively call the function as the array is just
+                    // a simple, stupid container for requirements
+                    include(item, parent);
+                });
+            } else if (Cale.isObject(requirement)) {
+                // iterate over the requirement properties
+                Cale.each(requirement, function (item, name) {
+                    // recursively call the function as the object is a
+                    // a container, but make sure to pass along the name
+                    // of the property as the "parent" so that the requires
+                    // are hierarchical
+                    include(item, (typeof parent === "string") ?
+                        parent + "/" + name : name);
+                });
+            }
+        }
+        // if we have things to include
         if (!!Cale.Configuration.includes) {
-            // iterate over the includes
-            Cale.each(Cale.Configuration.includes, function (include) {
-                // create a variable that might be used to store a requirement
-                var dependency = null;
-                // if include is just a string
-                if (typeof include === "string") {
-                    // then treat this as a single file
-                    Cale.require(include);
-                } else if (Cale.isObject(include)) {
-                    // iterate over the sub component
-                    Cale.each(include, function (components, system) {
-                        // if the sub component is an array
-                        if (Cale.isArray(components)) {
-                            // copy the array as we are making changes to it
-                            dependency = components.slice(0);
-                            // iterate over the dependencies
-                            Cale.each(dependency, function (component, index) {
-                                // turn the dependency into a path
-                                dependency[index] = system + "/" + component;
-                            });
-                            // get all of the dependencies
-                            Cale.require(dependency);
-                        } else if (typeof components === "string") {
-                            // this is just one file so turn the dependecy
-                            // into a path
-                            dependency = system + "/" + components;
-                            // get the single depdency
-                            Cale.require(dependency);
-                        }
-                    });
-                }
-            });
+            // then include stuff
+            include(Cale.Configuration.includes);
         }
     });
 }());
