@@ -14,10 +14,12 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
         
         // subscribe to global update messages
         Cale.subscribe("update", function (gametime) {
+            // use self to call the overrridden function
             self.update(gametime);
         });
         // subscribe to global draw messages
         Cale.subscribe("draw", function (graphics) {
+            // use self to call the overridden function
             self.draw(graphics);
         });
     };
