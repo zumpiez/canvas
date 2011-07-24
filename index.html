@@ -33,7 +33,6 @@
                 Cale.augment(ball, {
                     initialize: function () {
                         var self = this;
-                        Cale.log(self.parent);
                         this.parent.subscribe("update", function (gametime) {
                             self.publish("update", gametime);
                         });
@@ -68,7 +67,6 @@
                     initialize: function () {
                         var self = this;
                         this.parent.subscribe("draw", function () {
-                            Cale.log("drawin' a ball, yo");
                             graphics.arc({
                                 x: self.parent.translation.x,
                                 y: self.parent.translation.y,
