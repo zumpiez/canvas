@@ -33,10 +33,23 @@ Cale.Vector2 = function(x, y) {
 
         return new Cale.Vector2(x,y);
     };
-    
+
     // calculate the magnitude of a vector
     this.magnitude = function () {
         return Math.sqrt((self.x * self.x) + (self.y * self.y));
+    };
+
+    // rotate a vector by an angle, immutable style
+    this.rotate = function (angle) {
+        var x, y, cos, sin;
+
+        cos = Math.cos(angle);
+        sin = Math.sin(angle);
+
+        x = self.x * cos - self.y * sin;
+        y = self.x * sin + self.y * cos;
+
+        return new Cale.Vector2(x, y);
     };
 };
 
