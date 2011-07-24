@@ -38,9 +38,11 @@
                     }
                 });
 
+                var frames;
+
                 gameConsole.addComponent({
                     initialize: function () {
-                        var self = this, frames = 0;
+                        var self = this;
                         this.parent.subscribe("draw", function () {
                             if (self.parent.fps) {
                                 var fps = ++frames / ((+new Date() -
@@ -112,7 +114,16 @@
                     }
                 });
 
-                game.start();
+                var startTime = null;
+
+                Cale.on(document.getElementById("start"), "click", function () {
+                    frames = 0;
+                    game.start();
+                });
+
+                Cale.on(document.getElementById("stop"), "click", function () {
+                    game.stop();
+                });
             }
         </script>
     </head>
