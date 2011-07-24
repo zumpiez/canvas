@@ -74,15 +74,14 @@
 
                 world.addEntity(ball);
 
-                var configuration = {
+                var game = new Cale.Game({
                     update: function(gameTime) {
                         world.publish("update", gameTime);
                     },
                     draw: function() {
                         world.publish("draw");
                     }
-                }
-                var game = new Cale.Game(configuration);
+                });
 
                 game.start();
             }
