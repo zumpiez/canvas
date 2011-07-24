@@ -44,7 +44,7 @@
                     initialize: function () {
                         var self = this;
                         this.parent.subscribe("update", function () {
-                            var keyboard = self.keyboard;
+                            var keyboard = self.keyboard();
                             if (keyboard.isDown(Cale.Input.Keys.LEFT)) {
                                 self.parent.translation.x -= 1;
                             } else if (keyboard.isDown(Cale.Input.Keys.RIGHT)) {
