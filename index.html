@@ -11,6 +11,7 @@
         </style>
         <script src="cale.js"></script>
         <script>
+            var gameConsole;
             // execute on body load
             function load() {
                 var world = new Cale.Entity();
@@ -24,6 +25,34 @@
                             graphics.clear();
                         });
                     } 
+                });
+
+                gameConsole = new Cale.Entity();
+                Cale.augment(gameConsole, {
+                    fps: true,
+                    initialize: function () {
+                        var self = this;
+                        this.parent.subscribe("draw", function () {
+                            self.publish("draw");
+                        });
+                    }
+                });
+
+                gameConsole.addComponent({
+                    initialize: function () {
+                        var self = this, frames = 0;
+                        this.parent.subscribe("draw", function () {
+                            if (self.parent.fps) {
+                                var fps = ++frames / ((+new Date() -
+                                    game.startTime()) / 1000);
+                                graphics.text({
+                                    text: "fps: " + fps.toFixed(2),
+                                    x: 5,
+                                    y: 10
+                                });
+                            }
+                        });
+                    }
                 });
                 
                 var ball = new Cale.Entity({x:150, y:150});
@@ -72,7 +101,7 @@
                     }
                 });
 
-                world.addEntity(ball);
+                world.addEntities(gameConsole, ball);
 
                 var game = new Cale.Game({
                     update: function(gameTime) {
