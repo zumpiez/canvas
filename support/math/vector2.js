@@ -1,56 +1,6 @@
 Cale.Vector2 = function(x, y) {
-    var self = this;
-
     this.x = x || 0;
     this.y = y || 0;
-
-    //add two vectors, immutable style
-    this.add = function(vector) {
-        var x, y;
-
-        x = self.x + vector.x;
-        y = self.y + vector.y;
-
-        return new Cale.Vector2(x,y);
-    };
-
-    //subtract two vectors, immutable style
-    this.subtract = function(vector) {
-        var x, y;
-
-        x = self.x - vector.x;
-        y = self.y - vector.y;
-
-        return new Cale.Vector2(x,y);
-    };
-
-    //scale a vector by a scalar amount, immutable style
-    this.scale = function(scalar) {
-        var x, y;
-
-        x = self.x * scalar;
-        y = self.x * scalar;
-
-        return new Cale.Vector2(x,y);
-    };
-
-    // calculate the magnitude of a vector
-    this.magnitude = function () {
-        return Math.sqrt((self.x * self.x) + (self.y * self.y));
-    };
-
-    // rotate a vector by an angle, immutable style
-    this.rotate = function (angle) {
-        var x, y, cos, sin;
-
-        cos = Math.cos(angle);
-        sin = Math.sin(angle);
-
-        x = self.x * cos - self.y * sin;
-        y = self.x * sin + self.y * cos;
-
-        return new Cale.Vector2(x, y);
-    };
 };
 
 Cale.Vector2.zero = function() {
@@ -71,4 +21,52 @@ Cale.Vector2.up = function() {
 
 Cale.Vector2.down = function() {
     return new Cale.Vector2(0,1);
+};
+
+//add two vectors, immutable style
+Cale.Vector2.prototype.add = function(vector) {
+    var x, y;
+
+    x = this.x + vector.x;
+    y = this.y + vector.y;
+
+    return new Cale.Vector2(x,y);
+};
+
+//subtract two vectors, immutable style
+Cale.Vector2.prototype.subtract = function(vector) {
+    var x, y;
+
+    x = this.x - vector.x;
+    y = this.y - vector.y;
+
+    return new Cale.Vector2(x,y);
+};
+
+//scale a vector by a scalar amount, immutable style
+Cale.Vector2.prototype.scale = function(scalar) {
+    var x, y;
+
+    x = this.x * scalar;
+    y = this.x * scalar;
+
+    return new Cale.Vector2(x,y);
+};
+
+// calculate the magnitude of a vector
+Cale.Vector2.prototype.magnitude = function () {
+    return Math.sqrt((this.x * this.x) + (this.y * this.y));
+};
+
+// rotate a vector by an angle, immutable style
+Cale.Vector2.prototype.rotate = function (angle) {
+    var x, y, cos, sin;
+
+    cos = Math.cos(angle);
+    sin = Math.sin(angle);
+
+    x = this.x * cos - this.y * sin;
+    y = this.x * sin + this.y * cos;
+
+    return new Cale.Vector2(x, y);
 };
