@@ -1,9 +1,9 @@
 Cale.require(["support/math/vector2", "engine/component"], function () {
     Cale.Entity = function (options) {
-        var self = this;
-        this.topics = {}, this.id = 0;
         options = options || {};
 
+        this.topics = {};
+        this.id = 0;
         this.components = [];
         this.entities = [];
 
