@@ -81,15 +81,39 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
         }
     };
 
+    // add component
     Cale.Entity.prototype.addComponent = function(component) {
+        // todo: type checking?
         this.components.push(component);
         component.parent = this;
         component.initialize();
+        return this;
     };
 
+    // add multiple components
+    Cale.Entity.prototype.addComponents = function () {
+        var index, length = arguments.length;
+        for (index = 0; index < length; index++) {
+            this.addComponent(arguments[index]);
+        }
+        return this;
+    }
+
+    // add entity
     Cale.Entity.prototype.addEntity = function(entity) {
+        // todo: type checking?
         this.entities.push(entity);
         entity.parent = this;
         entity.initialize();
+        return this;
+    };
+
+    // add multiple entities
+    Cale.Entity.prototype.addEntities = function () {
+        var index, length = arguments.length;
+        for (index = 0; index < length; index++) {
+            this.addEntity(arguments[index]);
+        }
+        return this;
     };
 });

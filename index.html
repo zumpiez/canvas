@@ -59,8 +59,7 @@
                     }
                 });
 
-                ball.addComponent(inputComponent);
-                ball.addComponent({
+                ball.addComponents(inputComponent, {
                     initialize: function () {
                         var self = this;
                         this.parent.subscribe("draw", function () {
