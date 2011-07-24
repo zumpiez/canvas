@@ -4,6 +4,9 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
         this.topics = {}, this.id = 0;
         options = options || {};
 
+        this.components = [];
+        this.entities = [];
+
         if (!!options.translation) {
             this.translation = options.translation;
         } else if (!!options.x || !!options.y) {
@@ -13,6 +16,10 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
         }
     };
     
+    Cale.Entity.prototype.initialize = function() {
+        //override me
+    };
+
     // subscribe
     Cale.Entity.prototype.subscribe = function (topic, callback) {
         var token = false;
@@ -66,11 +73,23 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
             return false;
         } else {
             // iterate over the subscribers in the topic
-            Cale.each(topics[topic], function (subscriber) {
+            Cale.each(this.topics[topic], function (subscriber) {
                 // notify the current subscriber
                 subscriber.callback(message);
             });
             return true;
         }
+    };
+
+    Cale.Entity.prototype.addComponent = function(component) {
+        this.components.push(component);
+        component.parent = this;
+        component.initialize();
+    };
+
+    Cale.Entity.prototype.addEntity = function(entity) {
+        this.entities.push(entity);
+        entity.parent = this;
+        entity.initialize();
     };
 });

@@ -21,8 +21,6 @@
                     e = (!!e) ? e : window.event;
                     // add the property to the object (value doesn't matter)
                     pressed[e.keyCode] = true;
-                    // alert the horde (potentially do nothing)
-                    Cale.publish(NS.KEYDOWN, e);
                 });
 
                 // attach a keyup handler to the window
@@ -31,8 +29,6 @@
                     e = (!!e) ? e : window.event;
                     // delete the property from the object
                     delete pressed[e.keyCode];
-                    // alert the horde (potentially do nothing)
-                    Cale.publish(NS.KEYUP, e);
                 });
 
                 // create the keyboard object literal and return it

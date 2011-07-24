@@ -13,100 +13,87 @@
         <script>
             // execute on body load
             function load() {
-                var graphics, game, start, stop, ball, frames = 0;
+                var world = new Cale.Entity();
 
-                graphics = new Cale.Graphics({ canvas: "canvas" });
+                var graphics = new Cale.Graphics({ canvas: "canvas" });
 
-                (function () {
-                    var keys = Cale.Input.Keys,
-                        ballInputComponent = new Cale.InputComponent();
-                        
-                    Cale.augment(ballInputComponent, {
-                        update: function (container, keyboard) {
-                            if (keyboard.isDown(keys.LEFT)) {
-                                container.translation.x -= 1;
-                            } else if (keyboard.isDown(keys.RIGHT)) {
-                                container.translation.x += 1;
-                            }
-                            if (keyboard.isDown(keys.UP)) {
-                                container.translation.y -= 1;
-                            } else if (keyboard.isDown(keys.DOWN)) {
-                                container.translation.y += 1;
-                            }
-                        }
-                    });
-
-                    // do the inheritance
-                    Cale.inherit(Ball, Cale.Entity);
-                    function Ball(options) {
-                        options = options || {};
-                        Cale.inherit(this, Cale.Entity, options);
-                        this.radius = options.radius || 2;
-                        this.inputComponent = ballInputComponent;
-                        // to update the physics/state of the entity
-                        this.update = function (gametime) {
-                            this.inputComponent.update(this,
-                                Cale.Input.Keyboard.getInstance());
-                        };
-                        this.draw = function (graphics) {
-                            // draw the arc and fill it
-                            graphics.arc({
-                                x: this.translation.x,
-                                y: this.translation.y,
-                                radius: this.radius
-                            }).fill();
-                            return this;
-                        };
-                    }
-
-                    // the y axis is inverted (zero is top not bottom)
-                    ball = new Ball({
-                        x: graphics.width() / 2,
-                        y: graphics.height() / 2,
-                        radius: 10
-                    });
-                }());
-
-                // create the game
-                game = new Cale.Game({
-                    update: function (gametime) {
-                        // update that ball!
-                        Cale.publish("update", gametime);
-                    },
-                    draw: function () {
-                        // calculate the fps
-                        var fps = (++frames) / ((+new Date() -
-                                this.startTime()) / 1000);
-                        // clear the screen and draw the fps in text
-                        graphics.clear().text({
-                            text: "fps: " + fps.toFixed(2),
-                            x: 5,
-                            y: 10
+                var drawComponent = new Cale.Component();
+                Cale.augment(drawComponent, {
+                    initialize: function () {
+                        var self = this;
+                        this.parent.subscribe("draw", function () {
+                            graphics.clear();
                         });
-                        Cale.publish("draw", graphics);
+                    } 
+                });
+
+                world.addComponent(drawComponent);
+                
+                var ball = new Cale.Entity({x:150, y:150});
+                Cale.augment(ball, {
+                    initialize: function () {
+                        var self = this;
+                        Cale.log(self.parent);
+                        this.parent.subscribe("update", function (gametime) {
+                            self.publish("update", gametime);
+                        });
+                        this.parent.subscribe("draw", function () {
+                            self.publish("draw"); 
+                        });
                     }
                 });
 
-                start = document.getElementById("start");
-
-                // start click handler
-                Cale.on(start, "click", function (e) {
-                    if (false === game.isRunning()) {
-                        frames = 0;
-                        Cale.log("starting game");
-                        game.start();
+                var inputComponent = new Cale.InputComponent();
+                Cale.augment(inputComponent, {
+                    initialize: function () {
+                        var self = this;
+                        this.parent.subscribe("update", function () {
+                            var keyboard = self.keyboard;
+                            if (keyboard.isDown(Cale.Input.Keys.LEFT)) {
+                                self.parent.translation.x -= 1;
+                            } else if (keyboard.isDown(Cale.Input.Keys.RIGHT)) {
+                                self.parent.translation.x += 1;
+                            }
+                            if (keyboard.isDown(Cale.Input.Keys.UP)) {
+                                self.parent.translation.y -= 1;
+                            } else if (keyboard.isDown(Cale.Input.Keys.DOWN)){
+                                self.parent.translation.y += 1;
+                            }
+                        });
                     }
                 });
 
-                stop = document.getElementById("stop");
-
-                // stop click handler
-                Cale.on(stop, "click", function (e) {
-                    if (true === game.isRunning()) {
-                        Cale.log("stopping game");
-                        game.stop();
+                var ballDrawComponent = new Cale.Component();
+                Cale.augment(ballDrawComponent, {
+                    initialize: function () {
+                        var self = this;
+                        this.parent.subscribe("draw", function () {
+                            Cale.log("drawin' a ball, yo");
+                            graphics.arc({
+                                x: self.parent.translation.x,
+                                y: self.parent.translation.y,
+                                radius: 10
+                            }).fill();
+                        });
                     }
                 });
+
+                ball.addComponent(inputComponent);
+                ball.addComponent(ballDrawComponent);
+
+                world.addEntity(ball);
+
+                var configuration = {
+                    update: function(gameTime) {
+                        world.publish("update", gameTime);
+                    },
+                    draw: function() {
+                        world.publish("draw");
+                    }
+                }
+                var game = new Cale.Game(configuration);
+
+                game.start();
             }
         </script>
     </head>
