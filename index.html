@@ -17,7 +17,7 @@
 
                 var graphics = new Cale.Graphics({ canvas: "canvas" });
 
-                var drawComponent = Cale.Component.create({
+                world.addComponent({
                     initialize: function () {
                         var self = this;
                         this.parent.subscribe("draw", function () {
@@ -25,8 +25,6 @@
                         });
                     } 
                 });
-
-                world.addComponent(drawComponent);
                 
                 var ball = new Cale.Entity({x:150, y:150});
                 Cale.augment(ball, {
@@ -61,7 +59,8 @@
                     }
                 });
 
-                var ballDrawComponent = Cale.Component.create({
+                ball.addComponent(inputComponent);
+                ball.addComponent({
                     initialize: function () {
                         var self = this;
                         this.parent.subscribe("draw", function () {
@@ -73,9 +72,6 @@
                         });
                     }
                 });
-
-                ball.addComponent(inputComponent);
-                ball.addComponent(ballDrawComponent);
 
                 world.addEntity(ball);
 
