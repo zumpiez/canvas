@@ -1,9 +1,4 @@
-(function () {
-    // convert degrees into radians
-    function degreesToRadians(degrees) {
-        return degrees * (Math.PI / 180);
-    }
-
+Cale.require("support/math/math", function () {
     Cale.Vector2 = function(x, y) {
         this.x = x || 0;
         this.y = y || 0;
@@ -76,7 +71,7 @@
     Cale.Vector2.prototype.rotate = function (angle) {
         var x, y, radians, cos, sin;
 
-        radians = degreesToRadians(angle);
+        radians = Cale.Math.degreesToRadians(angle);
 
         cos = Math.cos(radians);
         sin = Math.sin(radians);
@@ -91,4 +86,4 @@
     Cale.Vector2.prototype.toArray = function () {
         return [[this.x], [this.y]];
     };
-}());
+});

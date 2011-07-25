@@ -1,11 +1,6 @@
-(function () {
+Cale.require("support/math/math", function () {
     // hardcode to four for now
     var ROWS = 3, COLUMNS = 3;
-
-    // todo: create a new math library with this in it
-    function degreesToRadians(degrees) {
-        return degrees * (Math.PI / 180);
-    }
 
     Cale.Matrix = function (options) {
         var row, column, subscript;
@@ -71,7 +66,7 @@
     Cale.Matrix.createRotation = function (degrees) {
         var radians, cos, sin;
 
-        radians = degreesToRadians(degrees);
+        radians = Cale.Math.degreesToRadians(degrees);
 
         cos = Math.cos(radians);
         sin = Math.sin(radians);
@@ -171,4 +166,4 @@
 
         return array;
     };
-}());
+});

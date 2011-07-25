@@ -1,9 +1,4 @@
 (function () {
-    // todo: we need a common lib for this!
-    function degreesToRadians(degrees) {
-        return degrees * (Math.PI / 180);
-    }
-
     Cale.Vector3 = function(x, y, z) {
         this.x = x || 0;
         this.y = y || 0;
