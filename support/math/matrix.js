@@ -1,4 +1,4 @@
-Cale.require("support/math/vector3", function () {
+(function () {
     // hardcode to four for now
     var ROWS = 3, COLUMNS = 3;
 
@@ -41,7 +41,7 @@ Cale.require("support/math/vector3", function () {
         return new Cale.Matrix(array);
     };
 
-    // zero 3x3 matrix
+    // 3x3 zero matrix
     Cale.Matrix.zero = function () {
         return new Cale.Matrix();
     };
@@ -171,4 +171,4 @@ Cale.require("support/math/vector3", function () {
 
         return array;
     };
-});
+}());
