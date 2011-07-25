@@ -12,9 +12,9 @@
 
         options = options || {};
 
-        for (row = 0; row < ROWS; row++) {
-            for (column = 0; column < COLUMNS; column++) {
-                subscript = "m" + (row + 1) + (column + 1);
+        for (row = 1; row <= ROWS; row++) {
+            for (column = 1; column <= COLUMNS; column++) {
+                subscript = "m" + row + column;
                 this[subscript] = options[subscript] || 0;
             }
         }
