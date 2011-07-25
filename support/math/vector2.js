@@ -78,5 +78,4 @@
 
         return new Cale.Vector2(x, y);
     };
-
 }());
