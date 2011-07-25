@@ -9,6 +9,14 @@
         this.y = y || 0;
     };
 
+    // convert a matrix array into a vector (MAKES MAJOR ASSUMPTIONS)
+    Cale.Vector2.fromArray = function (array) {
+        return new Cale.Vector2({
+            x: array[0][0],
+            y: array[1][0]
+        });
+    };
+
     Cale.Vector2.zero = function() {
         return new Cale.Vector2(0,0);
     };
@@ -77,5 +85,10 @@
         y = this.x * sin + this.y * cos;
 
         return new Cale.Vector2(x, y);
+    };
+
+    // return an array representing this vector as an array matrix
+    Cale.Vector2.prototype.toArray = function () {
+        return [[this.x], [this.y]];
     };
 }());
