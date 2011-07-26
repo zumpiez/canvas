@@ -62,6 +62,15 @@ Cale.require("support/math/math", function () {
         return translation;
     };
 
+    // create a 3x3 scale matrix
+    Cale.Matrix.createScale = function (scalar) {
+        return new Cale.Matrix({
+            m11: scalar,
+            m22: scalar,
+            m33: 1
+        });
+    };
+
     // rotate a 3x3 matrix by an angle
     Cale.Matrix.createRotation = function (degrees) {
         var radians, cos, sin;

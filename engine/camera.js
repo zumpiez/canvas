@@ -1,17 +1,10 @@
 // we need them there vectors
-Cale.require("support/math/vector2", function () {
-    // camera obscura
-    // guidance: http://forums.create.msdn.com/forums/p/77063/468360.aspx
+Cale.require(["support/math/vector2", "support/math/vector3", "support/math/matrix"], function () {
     Cale.Camera = function (options) {
-        // private variables for zoom and rotation
-        var zoom, rotation;
-
-        // sanitize the options a bit
         options = options || {};
-        // initialize the zoom
-        zoom = options.zoom || 1;
-        // initialize the rotation
-        rotation = options.rotation || 1;
+
+        this.zoom = options.zoom || 1;
+        this.rotation = options.rotation || 0;
 
         // should this be a function, and not a property?
         // consistency?
@@ -22,43 +15,25 @@ Cale.require("support/math/vector2", function () {
         } else {
             this.translation = Cale.Vector2.zero();
         }
+    };
 
-        // zoom
-        this.zoom = function (z) {
-            // we are a setter
-            if (!!z) {
-                // update the zoom
-                zoom = z;
-                // return this for chaining
-                return this;
-            } else {
-                // we are a getter so get them their zoom
-                return zoom;
-            }
-        };
+    // move the camera by a vector amount
+    Cale.Camera.prototype.move = function (amount) {
+        this.translation = this.translation.add(amount);
+    };
 
-        // rotation
-        this.rotation = function (r) {
-            // we are a setter
-            if (!!r) {
-                // update the rotation
-                rotation = r;
-                // return this for chaining
-                return this;
-            } else {
-                // we are a getter so get them their rotation
-                return rotation;
-            }
-        };
+    // return the current camera transformation matrix
+    Cale.Camera.prototype.transformation = function (graphics) {
+        var position, viewport;
 
-        // move the camera by an amount
-        this.move = function (amount) {
-            // sanitize and massage amount a bit
-            amount = amount || Cale.Vector2.zero();
-            // update the camera position
-            this.position = this.position.add(amount);
-            // return this for chaining
-            return this;
-        };
+        position = new Cale.Vector3(-this.translation.x, -this.translation.y);
+
+        viewport = new Cale.Vector3(graphics.width() / 2,
+            graphics.height() / 2);
+
+        return Cale.Matrix.createTranslation(position).multiply(
+            Cale.Matrix.createRotation(this.rotation)).multiply(
+                Cale.Matrix.createScale(this.zoom)).multiply(
+                    Cale.Matrix.createTranslation(viewport));
     };
 });
