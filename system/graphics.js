@@ -3,18 +3,15 @@ Cale.Graphics = function (options) {
 
     options = options || {};
 
-    // get the type of the canvas
-    type = typeof options.canvas;
-
-    // let's get the canvas, somehow...
-    if (type === "object") {
-        // null is an object :(
-        if(options.canvas !== null) {
+    if (typeof options === "string") {
+        canvas = document.getElementById(options);
+    } else {
+        type = typeof options.canvas;
+        if (type === "object" && !!options.canvas) {
             canvas = options.canvas;
+        } else if (type === "string") {
+            canvas = document.getElementById(options.canvas);
         }
-    } else if(type === "string") {
-        // treat canvas as an id selector
-        canvas = document.getElementById(options.canvas);
     }
 
     // get the canvas
@@ -115,7 +112,11 @@ Cale.Graphics.prototype.restore = function () {
 Cale.Graphics.prototype.scale = function (options) {
     var context = this.context();
     options = options || {};
-    context.scale(options.x, options.y);
+    if (!!options.x || !!options.y) {
+        context.scale(options.x, options.y);
+    } else if (!isNaN(options)) {
+        context.scale(options, options);
+    }
     return this;
 };
 
@@ -136,18 +137,10 @@ Cale.Graphics.prototype.translate = function (options) {
 
 // changes the transformation matrix to apply the matrix
 Cale.Graphics.prototype.transform = function (options) {
-    var context = this.context();
+    var method, context = this.context();
     options = options || {};
-    context.transform(options.a, options.b, options.c,
-        options.d, options.e, options.f);
-    return this;
-};
-
-// changes the transformation matrix to the matrix
-Cale.Graphics.prototype.setTransform = function (options) {
-    var context = this.context();
-    options = options || {};
-    context.setTransform(options.a, options.b, options.c,
+    method = (options.set === true) ? "setTransform" : "transform";
+    context[method](options.a, options.b, options.c,
         options.d, options.e, options.f);
     return this;
 };
