@@ -118,11 +118,20 @@
     // attach an event handler to a DOM element in a way that works in IE<9 as
     // well as real browsers
     Cale.on = function (el, event, fn) {
+        if (typeof el === "string") {
+            el = document.getElementById(el);
+        }
         // redefine this function as the correct native method for the browser
         // (basically lazy loading)
         Cale.on = (!!el.addEventListener) ? function (el, event, fn) {
+            if (typeof el === "string") {
+                el = document.getElementById(el);
+            }
             el.addEventListener(event, fn, false);
         } : function (el, event, fn) {
+            if (typeof el === "string") {
+                el = document.getElementById(el);
+            }
             el.attachEvent("on" + event, fn);
         };
         // call the newly redefined function (from here on out the redefined
@@ -133,11 +142,20 @@
     // detach an event handler from a DOM element in a way that works in IE<9
     // as well as real browsers
     Cale.un = function (el, event, fn) {
+        if (typeof el === "string") {
+            el = document.getElementById(el);
+        }
         // redefine this function as the correct native method for the browser
         // (basically lazy loading)
         Cale.un = (!!el.removeEventListener) ? function (el, event, fn) {
+            if (typeof el === "string") {
+                el = document.getElementById(el);
+            }
             el.removeEventListener(event, fn, false);
         } : function (el, event, fn) {
+            if (typeof el === "string") {
+                el = document.getElementById(el);
+            }
             el.detachEvent("on" + event, fn);
         };
         // call the newly redefined function (from here on out the redefined
