@@ -11,19 +11,28 @@
         </style>
         <script src="cale.js"></script>
         <script>
-            var gameConsole;
+            var gameConsole, graphics;
 
             function load() {
-                var graphics, frames;
+                var frames;
+
+                graphics = new Cale.Graphics("canvas");
 
                 var world = new Cale.Entity();
 
                 var drawWorldComponent = Cale.Component.create({
                     initialize: function () {
                         this.subscribe("draw", function (graphics) {
-                            graphics.clear().save();
+                            graphics
+                                .clear()
+                                .save()
+                                .translate({ x: 0, y: graphics.height() })
+                                .scale({ x: 1, y: -1 });
+
                             frames += 1;
+
                             this.publish("camera.draw", graphics);
+
                             graphics.restore();
                         });
                     }
@@ -47,19 +56,177 @@
                         });
                     },
                     fps: function () {
-                        return ++frames / ((+new Date() -
+                        return frames / ((+new Date() -
                             game.startTime()) / 1000);
+                    },
+                    setCameraZoom: function (zoom) {
+                        this.publish("camera.zoom", zoom);
+                    },
+                    setCameraRotation: function (rotation) {
+                        this.publish("camera.rotate", rotation);
+                    },
+                    setCameraTranslation: function (x, y) {
+                        this.publish("camera.translate", { x: x, y: y });
                     }
                 });
 
                 world.addComponent(gameConsole);
+
+                var cameraComponent = Cale.Component.create({
+                    zoom: 1,
+                    rotation: 0,
+                    translation: { x: 1, y: 1 },
+                    initialize: function () {
+                        this.subscribe("camera.zoom", function (zoom) {
+                            this.zoom = zoom;
+                        });
+
+                        this.subscribe("camera.rotate", function (rotation) {
+                            this.rotation = rotation;
+                        });
+
+                        this.subscribe("camera.translate", function (translation) {
+                            this.translation = translation;
+                        });
+
+                        this.subscribe("camera.draw", function (graphics) {
+                            graphics
+                                .save()
+                                .translate(this.translation)
+                                .rotate(this.rotation)
+                                .scale(this.zoom);
+
+                            this.publish("entity.draw", graphics);
+
+                            graphics.restore();
+                        });
+                    }
+                });
+
+                world.addComponent(cameraComponent);
+
+                var ball = new Cale.Entity();
+
+                Cale.augment(ball, {
+                    radius: 10,
+                    initialize: function () {
+                        var self = this;
+
+                        this.parent.subscribe("update", function (gametime) {
+                            self.publish("update", gametime);
+                        });
+
+                        this.parent.subscribe("entity.draw", function (graphics) {
+                            self.publish("draw", graphics);
+                        });
+                    }
+                });
+
+                var ballInputComponent = new Cale.InputComponent();
+
+                Cale.augment(ballInputComponent, {
+                    initialize: function () {
+                        var self = this, keyboard, keys;
+
+                        keyboard = this.keyboard();
+                        keys = Cale.Input.Keys;
+
+                        keyboard.onDown(function (e) {
+                            switch (e.keyCode) {
+                                case keys.A:
+                                    // rotate
+                                    break;
+                                case keys.D:
+                                    // rotate
+                                    break;
+                            }
+                        });
+
+                        this.subscribe("update", function () {
+                            var translation;
+
+                             if (keyboard.isDown(keys.LEFT)) {
+                                 this.publish("input", "left");
+                             } else if (keyboard.isDown(keys.RIGHT)) {
+                                 this.publish("input", "right");
+                             }
+
+                             if (keyboard.isDown(keys.UP)) {
+                                 this.publish("input", "up");
+                             }
+                        });
+                    }
+                });
+
+                ball.addComponent(ballInputComponent);
+
+                var ballMovementComponent = Cale.Component.create({
+                    initialize: function () {
+                        this.subscribe("input", function (input) {
+                            switch (input) {
+                                case "left":
+                                    this.translation.x -= 1;
+                                    this.publish("move");
+                                    break;
+                                case "right":
+                                    this.translation.x += 1;
+                                    this.publish("move");
+                                    break;
+                                case "up":
+                                    // attack
+                                    break;
+                            }
+                        }, this.parent);
+                    }
+                });
+
+                ball.addComponent(ballMovementComponent);
+
+                var ballCollisionComponent = Cale.Component.create({
+                    initialize: function () {
+                        this.subscribe("move", function () {
+                            var height, width;
+
+                            width = graphics.width();
+
+                            if (this.translation.x < this.radius) {
+                                this.translation.x = this.radius;
+                            } else if (this.translation.x > width - this.radius) {
+                                this.translation.x = width - this.radius;
+                            }
+
+                            height = graphics.height();
+
+                            if (this.translation.y < this.radius) {
+                                this.translation.y = this.radius;
+                            }
+                        }, this.parent);
+                    }
+                });
+
+                ball.addComponent(ballCollisionComponent);
+
+                var ballDrawComponent = Cale.Component.create({
+                    initialize: function () {
+                        this.subscribe("draw", function (graphics) {
+                            graphics.arc({
+                                x: this.translation.x,
+                                y: this.translation.y,
+                                radius: this.radius
+                            }).fill();
+                        }, this.parent);
+                    }
+                });
+
+                ball.addComponent(ballDrawComponent);
+
+                world.addEntity(ball);
 
                 var game = new Cale.Game({
                     update: function (gametime) {
                         world.publish("update", gametime);
                     },
                     draw: function () {
-                        graphics = graphics || new Cale.Graphics("canvas");
                         world.publish("draw", graphics);
                     }
                 });
