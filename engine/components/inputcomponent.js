@@ -6,5 +6,7 @@ Cale.require(["system/input", "engine/component"], function () {
         Cale.inherit(this, Cale.Component);
     };
 
+    Cale.inherit(Cale.InputComponent, Cale.Component);
+
     Cale.InputComponent.prototype.keyboard = Cale.Input.Keyboard.getInstance;
 });
