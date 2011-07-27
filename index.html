@@ -12,114 +12,64 @@
         <script src="cale.js"></script>
         <script>
             var gameConsole;
-            // execute on body load
+
             function load() {
+                var graphics, frames;
+
                 var world = new Cale.Entity();
 
-                var graphics = new Cale.Graphics({ canvas: "canvas" });
-
-                world.addComponent({
+                var drawWorldComponent = Cale.Component.create({
                     initialize: function () {
-                        var self = this;
-                        this.parent.subscribe("draw", function () {
-                            graphics.clear();
-                        });
-                    } 
-                });
-
-                gameConsole = new Cale.Entity();
-                Cale.augment(gameConsole, {
-                    fps: true,
-                    initialize: function () {
-                        var self = this;
-                        this.parent.subscribe("draw", function () {
-                            self.publish("draw");
+                        this.subscribe("draw", function (graphics) {
+                            graphics.clear().save();
+                            frames += 1;
+                            this.publish("camera.draw", graphics);
+                            graphics.restore();
                         });
                     }
                 });
 
-                var frames;
+                world.addComponent(drawWorldComponent);
 
-                gameConsole.addComponent({
+                gameConsole = Cale.Component.create({
+                    showFps: true,
                     initialize: function () {
-                        var self = this;
-                        this.parent.subscribe("draw", function () {
-                            if (self.parent.fps) {
-                                var fps = ++frames / ((+new Date() -
-                                    game.startTime()) / 1000);
+                        this.subscribe("draw", function (graphics) {
+                            var offsetY = 10;
+                            if (this.showFps === true) {
                                 graphics.text({
-                                    text: "fps: " + fps.toFixed(2),
+                                    text: "fps: " + this.fps().toFixed(2),
                                     x: 5,
-                                    y: 10
+                                    y: offsetY
                                 });
+                                offsetY += 5;
                             }
                         });
-                    }
-                });
-                
-                var ball = new Cale.Entity({x:150, y:150});
-                Cale.augment(ball, {
-                    initialize: function () {
-                        var self = this;
-                        this.parent.subscribe("update", function (gametime) {
-                            self.publish("update", gametime);
-                        });
-                        this.parent.subscribe("draw", function () {
-                            self.publish("draw"); 
-                        });
+                    },
+                    fps: function () {
+                        return ++frames / ((+new Date() -
+                            game.startTime()) / 1000);
                     }
                 });
 
-                var inputComponent = new Cale.InputComponent();
-                Cale.augment(inputComponent, {
-                    initialize: function () {
-                        var self = this;
-                        this.parent.subscribe("update", function () {
-                            var keyboard = self.keyboard();
-                            if (keyboard.isDown(Cale.Input.Keys.LEFT)) {
-                                self.parent.translation.x -= 1;
-                            } else if (keyboard.isDown(Cale.Input.Keys.RIGHT)) {
-                                self.parent.translation.x += 1;
-                            }
-                            if (keyboard.isDown(Cale.Input.Keys.UP)) {
-                                self.parent.translation.y -= 1;
-                            } else if (keyboard.isDown(Cale.Input.Keys.DOWN)){
-                                self.parent.translation.y += 1;
-                            }
-                        });
-                    }
-                });
-
-                ball.addComponents(inputComponent, {
-                    initialize: function () {
-                        var self = this;
-                        this.parent.subscribe("draw", function () {
-                            graphics.arc({
-                                x: self.parent.translation.x,
-                                y: self.parent.translation.y,
-                                radius: 10
-                            }).fill();
-                        });
-                    }
-                });
-
-                world.addEntities(gameConsole, ball);
+                world.addComponent(gameConsole);
 
                 var game = new Cale.Game({
-                    update: function(gameTime) {
-                        world.publish("update", gameTime);
+                    update: function (gametime) {
+                        world.publish("update", gametime);
                     },
-                    draw: function() {
-                        world.publish("draw");
+                    draw: function () {
+                        graphics = graphics || new Cale.Graphics("canvas");
+                        world.publish("draw", graphics);
                     }
                 });
 
-                Cale.on(document.getElementById("start"), "click", function () {
+                Cale.on("start", "click", function () {
                     frames = 0;
                     game.start();
                 });
 
-                Cale.on(document.getElementById("stop"), "click", function () {
+                Cale.on("stop", "click", function () {
                     game.stop();
                 });
             }
