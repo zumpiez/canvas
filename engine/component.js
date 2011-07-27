@@ -14,9 +14,11 @@ Cale.Component.prototype.publish = function (options) {
     if (!!this.parent) {
         options = options || {};
 
-        if (arguments.length > 1) {
+        if (typeof options === "string") {
             topic = options;
-            message = arguments[1];
+            if (arguments.length > 1) {
+                message = arguments[1];
+            }
         } else {
             topic = options.topic;
             message = options.message;
