@@ -16,13 +16,25 @@
             function load() {
                 var graphics, frames;
 
-                var world = new Cale.Entity();
+                var game = new Cale.Game({
+                    update: function (gametime) {
+                        world.publish("update", gametime);
+                    },
+                    draw: function () {
+                        graphics = graphics || new Cale.graphics("canvas");
+                        world.publish("draw", graphics);
+                    },
+                    canvasSize: { width: 300, height: 300 },
+                    canvasContainer: document.getElementById("game")
+                });
+
+                var world = game.world;
 
                 var drawWorldComponent = Cale.Component.create({
                     initialize: function () {
                         this.subscribe("draw", function (graphics) {
                             graphics.clear().save();
-                            frames += 1;
+                            frames += 1;    
                             this.publish("camera.draw", graphics);
                             graphics.restore();
                         });
@@ -54,16 +66,6 @@
 
                 world.addComponent(gameConsole);
 
-                var game = new Cale.Game({
-                    update: function (gametime) {
-                        world.publish("update", gametime);
-                    },
-                    draw: function () {
-                        graphics = graphics || new Cale.Graphics("canvas");
-                        world.publish("draw", graphics);
-                    }
-                });
-
                 Cale.on("start", "click", function () {
                     frames = 0;
                     game.start();
@@ -80,9 +82,7 @@
             <input id="start" type="button" value="Start" />
             <input id="stop" type="button" value="Stop" />
         </div>
-        <div class="game">
-            <canvas id="canvas" width="300" height="300">
-            </canvas>
+        <div id="game" class="game" width="300" height="300">
         </div>
     </body>
 </html>
