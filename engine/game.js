@@ -2,6 +2,7 @@ Cale.require(["engine/entity"], function() {
     //option parameters supported thus far:
     //
     //timestep: The game loop runs exactly once every [timestep] milliseconds. Default is 10 (1000/10 = 100 loops/sec)
+    //canvasSize{width, height}: The width and height of the canvas that will be emitted during initialization.
     Cale.Game = function (options) {
         var self = this, timeout = null, start, last, game, accumulator, timestep;
 
@@ -9,6 +10,9 @@ Cale.require(["engine/entity"], function() {
 
         // in milliseconds
         timestep = options.timestep || 10;
+
+        //set canvas object size
+        options.canvasSize = options.canvasSize || {width: 256, height: 256};
 
         // is the game loop running?
         this.isRunning = function () {
@@ -79,6 +83,12 @@ Cale.require(["engine/entity"], function() {
 
         
         this.world = new Cale.Entity();
+        
+        //emit canvas into document
+        var canvas = document.createElement('canvas');
+        canvas.width = options.canvasSize.width;
+        canvas.height = options.canvasSize.height;
 
+        document.body.appendChild(canvas);
     };
 });
