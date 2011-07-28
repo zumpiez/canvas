@@ -6,16 +6,18 @@ Cale.require(["engine/entity"], function() {
     //canvasSize{width, height}: The width and height of the canvas that will be
     //                           added to the document during initialization.
     //                           Default size is 256x256, because why not.
+    //canvasContainer: A DOM element that will be parent to the canvas.
+    //                 If you don't specify this, it'll just be spit into BODY.
     Cale.Game = function (options) {
         var self = this, timeout = null, start, last, game, accumulator, timestep;
 
-        options = options || {};
+        //Set Defaults
 
+        options = options || {};
         // in milliseconds
         timestep = options.timestep || 10;
-
-        //set canvas object size
         options.canvasSize = options.canvasSize || {width: 256, height: 256};
+        options.canvasContainer = options.canvasContainer || document.body;
 
         // is the game loop running?
         this.isRunning = function () {
@@ -91,7 +93,7 @@ Cale.require(["engine/entity"], function() {
         var canvas = document.createElement('canvas');
         canvas.width = options.canvasSize.width;
         canvas.height = options.canvasSize.height;
-
-        document.body.appendChild(canvas);
+        
+        options.canvasContainer.appendChild(canvas);
     };
 });
