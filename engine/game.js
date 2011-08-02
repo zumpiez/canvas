@@ -9,7 +9,8 @@ Cale.require(["engine/entity"], function() {
     //canvasContainer: A DOM element that will be parent to the canvas.
     //                 If you don't specify this, it'll just be spit into BODY.
     Cale.Game = function (options) {
-        var self = this, timeout = null, start, last, game, accumulator, timestep;
+        var self = this, timeout = null, start, last, game, accumulator, 
+                    graphics, timestep;
 
         //Set Defaults
 
@@ -94,6 +95,12 @@ Cale.require(["engine/entity"], function() {
         canvas.width = options.canvasSize.width;
         canvas.height = options.canvasSize.height;
         
+        graphics = new Cale.Graphics(canvas);
+
+        this.graphics = function() {
+            return graphics;
+        }
+
         options.canvasContainer.appendChild(canvas);
     };
 });

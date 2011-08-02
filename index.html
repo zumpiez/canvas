@@ -11,22 +11,23 @@
         </style>
         <script src="cale.js"></script>
         <script>
-            var gameConsole;
+            var gameConsole, graphics;
 
             function load() {
-                var graphics, frames;
+                var frames;
 
                 var game = new Cale.Game({
                     update: function (gametime) {
                         world.publish("update", gametime);
                     },
                     draw: function () {
-                        graphics = graphics || new Cale.graphics("canvas");
                         world.publish("draw", graphics);
                     },
                     canvasSize: { width: 300, height: 300 },
                     canvasContainer: document.getElementById("game")
                 });
+
+                graphics = game.graphics();
 
                 var world = game.world;
 
