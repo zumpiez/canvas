@@ -210,8 +210,8 @@
     (function () {
         var pending = {}, loaded = {}, head;
 
-        function script(file, async) {
-            var head, script = document.createElement("script");
+        function include(file, async) {
+            var script = document.createElement("script");
             script.src = file;
             script.async = async || false;
 
@@ -249,7 +249,7 @@
                     pending[file].push(callback);
                 }
                 if (isNewRequirement) {
-                    script(file);
+                    include(file);
                 }
             }
         }
@@ -281,7 +281,7 @@
                     }
                 };
 
-                for(index = 0; index < length; index++) {
+                for (index = 0; index < length; index++) {
                     Cale.require(requirement[index], wrap);
                 }
             }
