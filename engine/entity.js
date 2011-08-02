@@ -15,7 +15,7 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
             this.translation = Cale.Vector2.zero();
         }
     };
-    
+
     Cale.Entity.prototype.initialize = function() {
         //override me
     };
@@ -97,7 +97,7 @@ Cale.require(["support/math/vector2", "engine/component"], function () {
             this.addComponent(arguments[index]);
         }
         return this;
-    }
+    };
 
     // add entity
     Cale.Entity.prototype.addEntity = function(entity) {
