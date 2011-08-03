@@ -1,4 +1,4 @@
-Cale.require("engine/entity", function() {
+Cale.require("engine/entity", function () {
     //option parameters supported thus far:
     //
     //timestep: The game loop runs exactly once every [timestep] milliseconds. 
@@ -10,7 +10,7 @@ Cale.require("engine/entity", function() {
     //                 If you don't specify this, it'll just be spit into BODY.
     Cale.Game = function (options) {
         var self = this, timeout = null, start, last, game, accumulator, 
-                    graphics, world, timestep;
+            graphics, world, timestep;
 
         //Set Defaults
 
@@ -31,7 +31,7 @@ Cale.require("engine/entity", function() {
         };
 
         // the graphics
-        this.graphics = function() {
+        this.graphics = function () {
             var canvas;
 
             if (!graphics) {
