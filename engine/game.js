@@ -99,7 +99,7 @@ Cale.require(["engine/entity"], function() {
 
         this.graphics = function() {
             return graphics;
-        }
+        };
 
         options.canvasContainer.appendChild(canvas);
     };
