@@ -6,10 +6,7 @@
         // http://addyosmani.com/resources/essentialjsdesignpatterns/book/
         Keyboard: (function () {
             // the lazy loaded instance of the keyboard, and pub/sub namespaces
-            var instance = null, NS = {
-                KEYUP: "cale.input.keyboard.keyup",
-                KEYDOWN: "cale.input.keyboard.keydown"
-            };
+            var instance = null, id = 0, callbacks = {};
 
             function initialize() {
                 // an index for key events
@@ -21,6 +18,10 @@
                     e = (!!e) ? e : window.event;
                     // add the property to the object (value doesn't matter)
                     pressed[e.keyCode] = true;
+
+                    Cale.each(callbacks["keydown"], function (callback) {
+                        callback(e);
+                    });
                 });
 
                 // attach a keyup handler to the window
@@ -29,6 +30,10 @@
                     e = (!!e) ? e : window.event;
                     // delete the property from the object
                     delete pressed[e.keyCode];
+
+                    Cale.each(callbacks["keyup"], function (callback) {
+                        callback(e);
+                    });
                 });
 
                 // create the keyboard object literal and return it
@@ -36,12 +41,49 @@
                     isDown: function (keyCode) {
                         // if the property exists the key is down
                         return pressed.hasOwnProperty(keyCode);
+                    },
+                    onDown: function (callback) {
+                        callbacks["keydown"] = callbacks["keydown"] || {};
+
+                        if (Cale.isFunction(callback)) {
+                            callbacks["keydown"][++id] = callback;
+                            return id;
+                        } else {
+                            return false;
+                        }
+                    },
+                    unDown: function (id) {
+                        if (!!id && !!callbacks["keydown"]) {
+                            if (!!callbacks["keydown"][id]) {
+                                delete callbacks["keydown"][id];
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    onUp: function (callback) {
+                        callbacks["keyup"] = callbacks["keyup"] || {};
+
+                        if (Cale.isFunction(callback)) {
+                            callbacks["keyup"][++id] = callback;
+                            return id;
+                        } else {
+                            return false;
+                        }
+                    },
+                    unUp: function (id) {
+                        if (!!id && !!callbacks["keyup"]) {
+                            if (!!callbacks["keyup"][id]) {
+                                delete callbacks["keyup"][id];
+                                return true;
+                            }
+                        }
+                        return false;
                     }
                 };
             }
 
             return {
-                NS: NS,
                 getInstance: function () {
                     // lazy load the keyboard instance
                     if (!instance) {
