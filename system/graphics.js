@@ -6,7 +6,6 @@ Cale.Graphics = function (config) {
 
     config = config || {};
 
-    debugger;
     if(!!config.canvas) {
         switch(typeof(config.canvas)) {
             case 'string':
