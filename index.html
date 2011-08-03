@@ -196,7 +196,7 @@
 
                             height = game.graphics().height();
 
-                            if (this.translation.y < this.radius) {
+                            if (this.translation.y + this.radius < this.radius) {
                                 this.translation.y = this.radius;
                             }
                         }, this.parent);
@@ -209,8 +209,8 @@
                     initialize: function () {
                         this.subscribe("draw", function (graphics) {
                             graphics.arc({
-                                x: this.translation.x,
-                                y: this.translation.y,
+                                x: this.translation.x + this.radius,
+                                y: this.translation.y + this.radius,
                                 radius: this.radius
                             }).fill();
                         }, this.parent);
