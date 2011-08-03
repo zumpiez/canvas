@@ -22,7 +22,7 @@ Cale.require("support/math/vector2", function () {
 
     // subscribe
     Cale.Entity.prototype.subscribe = function (topic, callback) {
-        var selector, token = false;
+        var selector = topic, token = false;
         // if callback is a function then we can proceed
         if (Cale.isFunction(callback)) {
             // generate the unique subscriber token
