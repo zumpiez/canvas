@@ -32,6 +32,19 @@ Cale.require("engine/entity", function() {
 
         // the graphics
         this.graphics = function() {
+            var canvas;
+
+            if (!graphics) {
+                canvas = document.createElement("canvas");
+
+                canvas.width = options.canvasSize.width;
+                canvas.height = options.canvasSize.height;
+
+                graphics = new Cale.Graphics({ canvas: canvas });
+
+                options.canvasContainer.appendChild(canvas);
+            }
+
             return graphics;
         };
 
@@ -99,14 +112,5 @@ Cale.require("engine/entity", function() {
             // return self for chaining
             return self;
         };
-        
-        //emit canvas into document
-        var canvas = document.createElement('canvas');
-        canvas.width = options.canvasSize.width;
-        canvas.height = options.canvasSize.height;
-        
-        graphics = new Cale.Graphics({canvas: canvas});
-
-        options.canvasContainer.appendChild(canvas);
     };
 });
