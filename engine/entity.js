@@ -70,6 +70,26 @@ Cale.require("support/math/vector2", function () {
         });
     };
 
+    Cale.Entity.prototype.forward = function (topic, translator) {
+        var self = this;
+
+        if (!!this.parent) {
+            this.parent.subscribe(topic, function (message, topic) {
+                var translation = topic;
+
+                if (typeof translator === "string") {
+                    translation = translator;
+                } else if (Cale.isFunction(translator)) {
+                    translation = translator(topic);
+                }
+
+                self.publish(translation, message);
+            });
+        }
+
+        return self;
+    };
+
     // add component
     Cale.Entity.prototype.addComponent = function(component) {
         // todo: type checking?
