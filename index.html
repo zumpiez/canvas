@@ -11,25 +11,21 @@
         </style>
         <script src="cale.js"></script>
         <script>
-            var gameConsole, graphics;
+            var gameConsole;
 
             function load() {
                 var frames;
 
                 var game = new Cale.Game({
                     update: function (gametime) {
-                        world.publish("update", gametime);
+                        this.world.publish("update", gametime);
                     },
                     draw: function () {
-                        world.publish("draw", graphics);
+                        this.world.publish("draw", this.graphics());
                     },
                     canvasSize: { width: 300, height: 300 },
                     canvasContainer: document.getElementById("game")
                 });
-
-                graphics = game.graphics();
-
-                var world = game.world;
 
                 var drawWorldComponent = Cale.Component.create({
                     initialize: function () {
@@ -48,7 +44,7 @@
                     }
                 });
 
-                world.addComponent(drawWorldComponent);
+                game.world.addComponent(drawWorldComponent);
 
                 gameConsole = Cale.Component.create({
                     showFps: true,
@@ -80,7 +76,7 @@
                     }
                 });
 
-                world.addComponent(gameConsole);
+                game.world.addComponent(gameConsole);
 
                 var cameraComponent = Cale.Component.create({
                     zoom: 1,
@@ -113,7 +109,7 @@
                     }
                 });
 
-                world.addComponent(cameraComponent);
+                game.world.addComponent(cameraComponent);
 
                 var ball = new Cale.Entity();
 
@@ -190,7 +186,7 @@
                         this.subscribe("move", function () {
                             var height, width;
 
-                            width = graphics.width();
+                            width = game.graphics().width();
 
                             if (this.translation.x < this.radius) {
                                 this.translation.x = this.radius;
@@ -198,7 +194,7 @@
                                 this.translation.x = width - this.radius;
                             }
 
-                            height = graphics.height();
+                            height = game.graphics().height();
 
                             if (this.translation.y < this.radius) {
                                 this.translation.y = this.radius;
@@ -223,16 +219,7 @@
 
                 ball.addComponent(ballDrawComponent);
 
-                world.addEntity(ball);
-
-                var game = new Cale.Game({
-                    update: function (gametime) {
-                        world.publish("update", gametime);
-                    },
-                    draw: function () {
-                        world.publish("draw", graphics);
-                    }
-                });
+                game.world.addEntity(ball);
 
                 Cale.on("start", "click", function () {
                     frames = 0;
