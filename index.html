@@ -120,15 +120,8 @@
                 Cale.augment(ball, {
                     radius: 10,
                     initialize: function () {
-                        var self = this;
-
-                        this.parent.subscribe("update", function (gametime) {
-                            self.publish("update", gametime);
-                        });
-
-                        this.parent.subscribe("entity.draw", function (graphics) {
-                            self.publish("draw", graphics);
-                        });
+                        this.forward("update");
+                        this.forward("entity.draw", "draw");
                     }
                 });
 
