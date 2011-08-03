@@ -18,10 +18,10 @@
 
                 var game = new Cale.Game({
                     update: function (gametime) {
-                        this.world.publish("update", gametime);
+                        this.world().publish("update", gametime);
                     },
                     draw: function () {
-                        this.world.publish("draw", this.graphics());
+                        this.world().publish("draw", this.graphics());
                     },
                     canvasSize: { width: 300, height: 300 },
                     canvasContainer: document.getElementById("game")
@@ -44,7 +44,7 @@
                     }
                 });
 
-                game.world.addComponent(drawWorldComponent);
+                game.world().addComponent(drawWorldComponent);
 
                 gameConsole = Cale.Component.create({
                     showFps: true,
@@ -76,7 +76,7 @@
                     }
                 });
 
-                game.world.addComponent(gameConsole);
+                game.world().addComponent(gameConsole);
 
                 var cameraComponent = Cale.Component.create({
                     zoom: 1,
@@ -109,7 +109,7 @@
                     }
                 });
 
-                game.world.addComponent(cameraComponent);
+                game.world().addComponent(cameraComponent);
 
                 var ball = new Cale.Entity();
 
@@ -219,7 +219,7 @@
 
                 ball.addComponent(ballDrawComponent);
 
-                game.world.addEntity(ball);
+                game.world().addEntity(ball);
 
                 Cale.on("start", "click", function () {
                     frames = 0;
