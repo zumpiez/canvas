@@ -1,16 +1,20 @@
-Cale.Graphics = function (options) {
+//config properties:
+//canvas: a reference to a canvas tag, either by ID (string) or a reference
+//        to a DOMCanvasTag
+Cale.Graphics = function (config) {
     var type, canvas, context;
 
-    options = options || {};
+    config = config || {};
 
-    if (typeof options === "string") {
-        canvas = document.getElementById(options);
-    } else {
-        type = typeof options.canvas;
-        if (type === "object" && !!options.canvas) {
-            canvas = options.canvas;
-        } else if (type === "string") {
-            canvas = document.getElementById(options.canvas);
+    debugger;
+    if(!!config.canvas) {
+        switch(typeof(config.canvas)) {
+            case 'string':
+                canvas = document.getElementById(config.canvas);
+                break;
+            case 'object':
+                canvas = config.canvas;
+                break;
         }
     }
 

@@ -95,7 +95,7 @@ Cale.require(["engine/entity"], function() {
         canvas.width = options.canvasSize.width;
         canvas.height = options.canvasSize.height;
         
-        graphics = new Cale.Graphics(canvas);
+        graphics = new Cale.Graphics({canvas: canvas});
 
         this.graphics = function() {
             return graphics;
