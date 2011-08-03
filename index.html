@@ -78,29 +78,15 @@
 
                 game.world().addComponent(gameConsole);
 
-                var cameraComponent = Cale.Component.create({
-                    zoom: 1,
-                    rotation: 0,
-                    translation: { x: 1, y: 1 },
+                var cameraComponent = new Cale.Camera({ x: 1, y: 1 });
+
+                Cale.augment(cameraComponent, {
                     initialize: function () {
-                        this.subscribe("camera.zoom", function (zoom) {
-                            this.zoom = zoom;
-                        });
-
-                        this.subscribe("camera.rotate", function (rotation) {
-                            this.rotation = rotation;
-                        });
-
-                        this.subscribe("camera.translate", function (translation) {
-                            this.translation = translation;
-                        });
-
                         this.subscribe("camera.draw", function (graphics) {
-                            graphics
-                                .save()
-                                .translate(this.translation)
-                                .rotate(this.rotation)
-                                .scale(this.zoom);
+                            graphics.save()
+                                .translate(this.position())
+                                .rotate(this.rotation())
+                                .scale(this.zoom());
 
                             this.publish("entity.draw", graphics);
 
