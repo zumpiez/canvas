@@ -55,11 +55,12 @@
             effectiveMessage = message;
             effectiveType = type;
         } else {
-            if (Cale.isObject(type)) {
+            if (!!type.type || !!type.message) {
                 effectiveMessage = type.message || "";
                 effectiveType = type.type || "";
             } else {
                 effectiveMessage = type;
+                console.log(effectiveMessage);
                 effectiveType = "";
             }
         }
