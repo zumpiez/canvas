@@ -60,7 +60,6 @@
                 effectiveType = type.type || "";
             } else {
                 effectiveMessage = type;
-                console.log(effectiveMessage);
                 effectiveType = "";
             }
         }
