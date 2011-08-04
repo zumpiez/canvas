@@ -49,11 +49,24 @@
     };
 
     // logs to console without blowin' up
-    Cale.log = function (message) {
-        // if console is defined
+    Cale.log = function (type, message) {
+        var effectiveType, effectiveMessage, sanitized;
+        if (!!message) {
+            effectiveMessage = message;
+            effectiveType = type;
+        } else {
+            if (Cale.isObject(type)) {
+                effectiveMessage = type.message || "";
+                effectiveType = type.type || "";
+            } else {
+                effectiveMessage = type;
+                effectiveType = "";
+            }
+        }
         if (!!console) {
-            // log a message
-            console.log(message);
+            sanitized = (!!effectiveType) ?
+                effectiveType + ": " + effectiveMessage : effectiveMessage;
+            console.log(sanitized);
         }
     };
 
