@@ -1,0 +1,3 @@
+[submodule "room-of-requirement"]
+	path = room-of-requirement
+	url = git@github.com:zumpiez/room-of-requirement.git
