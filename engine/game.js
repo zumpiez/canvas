@@ -1,4 +1,4 @@
-Cale.require(["engine/entity"], function() {
+Cale.require("engine/entity", function () {
     //option parameters supported thus far:
     //
     //timestep: The game loop runs exactly once every [timestep] milliseconds. 
@@ -10,7 +10,7 @@ Cale.require(["engine/entity"], function() {
     //                 If you don't specify this, it'll just be spit into BODY.
     Cale.Game = function (options) {
         var self = this, timeout = null, start, last, game, accumulator, 
-                    graphics, timestep;
+            graphics, world, timestep;
 
         //Set Defaults
 
@@ -28,6 +28,32 @@ Cale.require(["engine/entity"], function() {
         // when did the last game loop start in REAL TIME?
         this.startTime = function () {
             return (self.isRunning()) ? start : 0;
+        };
+
+        // the graphics
+        this.graphics = function () {
+            var canvas;
+
+            if (!graphics) {
+                canvas = document.createElement("canvas");
+
+                canvas.width = options.canvasSize.width;
+                canvas.height = options.canvasSize.height;
+
+                graphics = new Cale.Graphics({ canvas: canvas });
+
+                options.canvasContainer.appendChild(canvas);
+            }
+
+            return graphics;
+        };
+
+        // the world
+        this.world = function () {
+            if (!world) {
+                world = new Cale.Entity();
+            }
+            return world;
         };
 
         // inspirations:
@@ -86,21 +112,5 @@ Cale.require(["engine/entity"], function() {
             // return self for chaining
             return self;
         };
-
-        
-        this.world = new Cale.Entity();
-        
-        //emit canvas into document
-        var canvas = document.createElement('canvas');
-        canvas.width = options.canvasSize.width;
-        canvas.height = options.canvasSize.height;
-        
-        graphics = new Cale.Graphics({canvas: canvas});
-
-        this.graphics = function() {
-            return graphics;
-        }
-
-        options.canvasContainer.appendChild(canvas);
     };
 });

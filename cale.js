@@ -49,11 +49,24 @@
     };
 
     // logs to console without blowin' up
-    Cale.log = function (message) {
-        // if console is defined
+    Cale.log = function (type, message) {
+        var effectiveType, effectiveMessage, sanitized;
+        if (!!message) {
+            effectiveMessage = message;
+            effectiveType = type;
+        } else {
+            if (!!type.type || !!type.message) {
+                effectiveMessage = type.message || "";
+                effectiveType = type.type || "";
+            } else {
+                effectiveMessage = type;
+                effectiveType = "";
+            }
+        }
         if (!!console) {
-            // log a message
-            console.log(message);
+            sanitized = (!!effectiveType) ?
+                effectiveType + ": " + effectiveMessage : effectiveMessage;
+            console.log(sanitized);
         }
     };
 
@@ -182,28 +195,28 @@
     };
 
     // class augmentation
-    Cale.augment = function (target, source) {
-        var index, length, to, from;
-        // sanitize to pending on type
-        to = Cale.isFunction(target) ? target.prototype : target;
-        // sanitize from pending on type
-        from = Cale.isFunction(source) ? source.prototype : source;
-        // if only a few properties should be copied
-        if (arguments.length > 2) {
-            // cache the length as that won't change
-            length = arguments.length;
-            // iterate over the arguments
-            for (index = 2; index < length; index++) {
-                // copy from source to target
-                to[arguments[index]] = from[arguments[index]];
+    Cale.augment = function (target) {
+        var index, argument, property;
+        for (index = 1; index < arguments.length; index++) {
+            argument = arguments[index];
+            if (typeof argument === "object") {
+                if (argument === null) {
+                    target = argument;
+                } else if (argument instanceof Array) {
+                    target = argument.slice();
+                } else {
+                    for (property in argument) {
+                        if (argument.hasOwnProperty(property)) {
+                            target[property] = Cale.augment(
+                                target[property] || {}, argument[property]);
+                        }
+                    }
+                }
+            } else {
+                target = argument;
             }
-        } else {
-            // iterate over all properties in the source
-            Cale.each(from, function (property, name) {
-                // copy from souce to target
-                to[name] = property;
-            });
         }
+        return target;
     };
 
     //closure for Cale.require

@@ -3,33 +3,23 @@
     <head>
         <meta charset="utf-8">
         <title>Canvas</title>
-        <style>
-            #canvas
-            {
-                border: 1px solid black;
-            }
-        </style>
         <script src="cale.js"></script>
         <script>
-            var gameConsole, graphics;
+            var gameConsole;
 
             function load() {
                 var frames;
 
                 var game = new Cale.Game({
                     update: function (gametime) {
-                        world.publish("update", gametime);
+                        this.world().publish("update", gametime);
                     },
                     draw: function () {
-                        world.publish("draw", graphics);
+                        this.world().publish("draw", this.graphics());
                     },
                     canvasSize: { width: 300, height: 300 },
                     canvasContainer: document.getElementById("game")
                 });
-
-                graphics = game.graphics();
-
-                var world = game.world;
 
                 var drawWorldComponent = Cale.Component.create({
                     initialize: function () {
@@ -48,7 +38,7 @@
                     }
                 });
 
-                world.addComponent(drawWorldComponent);
+                game.world().addComponent(drawWorldComponent);
 
                 gameConsole = Cale.Component.create({
                     showFps: true,
@@ -80,31 +70,17 @@
                     }
                 });
 
-                world.addComponent(gameConsole);
+                game.world().addComponent(gameConsole);
 
-                var cameraComponent = Cale.Component.create({
-                    zoom: 1,
-                    rotation: 0,
-                    translation: { x: 1, y: 1 },
+                var cameraComponent = new Cale.Camera({ x: 1, y: 1 });
+
+                Cale.augment(cameraComponent, {
                     initialize: function () {
-                        this.subscribe("camera.zoom", function (zoom) {
-                            this.zoom = zoom;
-                        });
-
-                        this.subscribe("camera.rotate", function (rotation) {
-                            this.rotation = rotation;
-                        });
-
-                        this.subscribe("camera.translate", function (translation) {
-                            this.translation = translation;
-                        });
-
                         this.subscribe("camera.draw", function (graphics) {
-                            graphics
-                                .save()
-                                .translate(this.translation)
-                                .rotate(this.rotation)
-                                .scale(this.zoom);
+                            graphics.save()
+                                .translate(this.position())
+                                .rotate(this.rotation())
+                                .scale(this.zoom());
 
                             this.publish("entity.draw", graphics);
 
@@ -113,7 +89,7 @@
                     }
                 });
 
-                world.addComponent(cameraComponent);
+                game.world().addComponent(cameraComponent);
 
                 var ball = new Cale.Entity();
 
@@ -190,7 +166,7 @@
                         this.subscribe("move", function () {
                             var height, width;
 
-                            width = graphics.width();
+                            width = game.graphics().width();
 
                             if (this.translation.x < this.radius) {
                                 this.translation.x = this.radius;
@@ -198,9 +174,9 @@
                                 this.translation.x = width - this.radius;
                             }
 
-                            height = graphics.height();
+                            height = game.graphics().height();
 
-                            if (this.translation.y < this.radius) {
+                            if (this.translation.y + this.radius < this.radius) {
                                 this.translation.y = this.radius;
                             }
                         }, this.parent);
@@ -213,8 +189,8 @@
                     initialize: function () {
                         this.subscribe("draw", function (graphics) {
                             graphics.arc({
-                                x: this.translation.x,
-                                y: this.translation.y,
+                                x: this.translation.x + this.radius,
+                                y: this.translation.y + this.radius,
                                 radius: this.radius
                             }).fill();
                         }, this.parent);
@@ -223,16 +199,7 @@
 
                 ball.addComponent(ballDrawComponent);
 
-                world.addEntity(ball);
-
-                var game = new Cale.Game({
-                    update: function (gametime) {
-                        world.publish("update", gametime);
-                    },
-                    draw: function () {
-                        world.publish("draw", graphics);
-                    }
-                });
+                game.world().addEntity(ball);
 
                 Cale.on("start", "click", function () {
                     frames = 0;
