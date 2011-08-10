@@ -39,9 +39,10 @@
                 });
 
                 game.world().addComponent(drawWorldComponent);
-
+                var x = 0, y = 0, radius = 0;
                 gameConsole = Cale.Component.create({
                     showFps: true,
+                    showPos: true,
                     initialize: function () {
                         this.subscribe("draw", function (graphics) {
                             var offsetY = 10;
@@ -50,6 +51,14 @@
                                     text: "fps: " + this.fps().toFixed(2),
                                     x: 5,
                                     y: offsetY
+                                });
+                                offsetY += 5;
+                            }
+                            if (this.showPos === true) {
+                                graphics.text({
+                                    text: "x: " + x + "y: " + y + "radius: " + radius,
+                                    x: 5,
+                                    y: offsetY + offsetY
                                 });
                                 offsetY += 5;
                             }
@@ -130,8 +139,11 @@
                                  this.publish("input", "right");
                              }
 
-                             if (keyboard.isDown(keys.UP)) {
+                             else if (keyboard.isDown(keys.UP)) {
                                  this.publish("input", "up");
+                             }
+                             else if (keyboard.isDown(keys.DOWN)) {
+                                 this.publish("input", "down");
                              }
                         });
                     }
@@ -152,7 +164,13 @@
                                     this.publish("move");
                                     break;
                                 case "up":
+                                    this.translation.y += 1;
+                                    this.publish("move");
                                     // attack
+                                    break;
+                                case "down":
+                                    this.translation.y -= 1;
+                                    this.publish("move");
                                     break;
                             }
                         }, this.parent);
@@ -168,16 +186,18 @@
 
                             width = game.graphics().width();
 
-                            if (this.translation.x < this.radius) {
-                                this.translation.x = this.radius;
-                            } else if (this.translation.x > width - this.radius) {
-                                this.translation.x = width - this.radius;
+                            if (this.translation.x < 0) {
+                                this.translation.x = 0;
+                            } else if (this.translation.x + this.radius * 2 >= width) {
+                                this.translation.x = (width - this.radius * 2) - 1;
                             }
 
                             height = game.graphics().height();
 
-                            if (this.translation.y + this.radius < this.radius) {
-                                this.translation.y = this.radius;
+                            if (this.translation.y < 0) {
+                                this.translation.y = 0;
+                            } else if (this.translation.y + this.radius * 2 >= height) {
+                                this.translation.y = (height - this.radius * 2) - 1;
                             }
                         }, this.parent);
                     }
