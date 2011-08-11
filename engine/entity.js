@@ -1,4 +1,4 @@
-Cale.require("support/math/vector2", function () {
+requirement(["support/math/vector2.js"], function () {
     Cale.Entity = function (options) {
         options = options || {};
 

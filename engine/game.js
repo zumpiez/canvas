@@ -1,4 +1,4 @@
-Cale.require("engine/entity", function () {
+requirement(["engine/entity"], function () {
     //option parameters supported thus far:
     //
     //timestep: The game loop runs exactly once every [timestep] milliseconds. 

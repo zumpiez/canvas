@@ -1,5 +1,5 @@
 // we need them there vectors
-Cale.require(["engine/component", "support/math/vector2"], function () {
+requirement(["engine/component.js", "support/math/vector2.js"], function () {
     Cale.Camera = function (options) {
         var zoom, rotation, position;
 
