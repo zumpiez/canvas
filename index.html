@@ -42,7 +42,6 @@
                 var x = 0, y = 0, radius = 0;
                 gameConsole = Cale.Component.create({
                     showFps: true,
-                    showPos: true,
                     initialize: function () {
                         this.subscribe("draw", function (graphics) {
                             var offsetY = 10;
@@ -51,14 +50,6 @@
                                     text: "fps: " + this.fps().toFixed(2),
                                     x: 5,
                                     y: offsetY
-                                });
-                                offsetY += 5;
-                            }
-                            if (this.showPos === true) {
-                                graphics.text({
-                                    text: "x: " + x + "y: " + y + "radius: " + radius,
-                                    x: 5,
-                                    y: offsetY + offsetY
                                 });
                                 offsetY += 5;
                             }
