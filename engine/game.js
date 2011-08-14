@@ -1,4 +1,4 @@
-requirement(["engine/entity"], function () {
+requirement(["engine/entity", "system/graphics"], function () {
     //option parameters supported thus far:
     //
     //timestep: The game loop runs exactly once every [timestep] milliseconds. 
