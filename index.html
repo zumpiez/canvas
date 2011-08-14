@@ -6,7 +6,25 @@
         
         <script src="cale.js"></script>
         <script src="room-of-requirement/room-of-requirement.js"></script>
-
+        <script>
+            function load() {
+                var game = new Cale.Game({
+                    canvasContainer: document.getElementById("game"),
+                    draw: function () {
+                    },
+                    update: function (gametime) {
+                    }
+                });
+                
+                Cale.on("start", "click", function () {
+                    game.start();
+                });
+                
+                Cale.on("stop", "click", function () {
+                    game.stop();
+                });
+            }
+        </script>
     </head>
     <body onload="load()">
         <div class="controls">
