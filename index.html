@@ -4,29 +4,30 @@
         <meta charset="utf-8">
         <title>Canvas</title>
         
-        <script src="room-of-requirement/room-of-requirement.js"></script>
-        <script src="cale.js"></script>
+        <script data-main="cale/" src="http://requirejs.org/docs/release/0.26.0/minified/require.js"></script>
         <script>
-            function load() {
-                var game = new Cale.Game({
-                    canvasContainer: document.getElementById("game"),
-                    draw: function () {
-                    },
-                    update: function (gametime) {
-                    }
+            require(["cale"], function() {
+                require.ready(function() {
+                    var game = new Cale.Game({
+                        canvasContainer: document.getElementById("game"),
+                        draw: function () {
+                        },
+                        update: function (gametime) {
+                        }
+                    });
+                    
+                    Cale.on("start", "click", function () {
+                        game.start();
+                    });
+                    
+                    Cale.on("stop", "click", function () {
+                        game.stop();
+                    });
                 });
-                
-                Cale.on("start", "click", function () {
-                    game.start();
-                });
-                
-                Cale.on("stop", "click", function () {
-                    game.stop();
-                });
-            }
+            });
         </script>
     </head>
-    <body onload="load()">
+    <body>
         <div class="controls">
             <input id="start" type="button" value="Start" />
             <input id="stop" type="button" value="Stop" />

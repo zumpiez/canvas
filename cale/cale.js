@@ -217,5 +217,9 @@
             }
         }
         return target;
-    };    
+    };
+    
+    require(["cale/game.js"], function() {
+        alert("Camera loaded and all is cool");
+    })    
 }());
