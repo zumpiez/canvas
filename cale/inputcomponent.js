@@ -1,5 +1,5 @@
 // require input and component
-Cale.require(["system/input", "engine/component"], function () {
+require(["input", "component"], function () {
     // define the input component
     Cale.InputComponent = function() {
         // continue the inheritance

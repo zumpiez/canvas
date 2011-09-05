@@ -1,4 +1,4 @@
-requirement("support/math/math.js", function () {
+require("math", function () {
     Cale.Vector2 = function(x, y) {
         this.x = x || 0;
         this.y = y || 0;

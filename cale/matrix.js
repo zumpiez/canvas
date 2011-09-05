@@ -1,4 +1,4 @@
-requirement("support/math/math.js", function () {
+require("math", function () {
     // hardcode to four for now
     var ROWS = 3, COLUMNS = 3;
 
