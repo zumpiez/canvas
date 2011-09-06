@@ -50,7 +50,7 @@ Cale.Component.prototype.subscribe = function (options) {
         }
 
         this.parent.subscribe(topic, function (message) {
-            callback.call(message, scope);
+            callback.call(scope, message);
         });
     }
 
