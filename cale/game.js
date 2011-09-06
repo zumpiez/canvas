@@ -59,7 +59,8 @@ require(["entity", "graphics"], function () {
         // inspirations:
         //      http://gafferongames.com/game-physics/fix-your-timestep/
         //      http://blog.gameclosure.com/?p=111
-        this.start = function () {
+        // onStart: optional callback that calls after everything is up and running.
+        this.start = function (onStart) {
             if (!self.isRunning()) {
                 start = last = +new Date();
                 // reset the accumulator and game time
@@ -94,6 +95,7 @@ require(["entity", "graphics"], function () {
                         timeout = setTimeout(gameLoop, 0);
                     }
                 }, 0);
+                if(!!onStart) onStart();
             }
             // return self for chaining
             return self;
