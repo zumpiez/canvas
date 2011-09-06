@@ -5,27 +5,7 @@
         <title>Canvas</title>
         
         <script data-main="cale/" src="http://requirejs.org/docs/release/0.26.0/minified/require.js"></script>
-        <script>
-            require(["cale"], function() {
-                require.ready(function() {
-                    var game = new Cale.Game({
-                        canvasContainer: document.getElementById("game"),
-                        draw: function () {
-                        },
-                        update: function (gametime) {
-                        }
-                    });
-                    
-                    Cale.on("start", "click", function () {
-                        game.start();
-                    });
-                    
-                    Cale.on("stop", "click", function () {
-                        game.stop();
-                    });
-                });
-            });
-        </script>
+        <script src="knightshift.js"></script>
     </head>
     <body>
         <div class="controls">
